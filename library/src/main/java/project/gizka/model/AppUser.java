@@ -18,9 +18,11 @@ public class AppUser {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String chatId;
 
-    @Column(name = "registered_at", columnDefinition = "timestamp default now()")
+    @Column(name = "chat")
+    private String chat;
+
+    @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime registeredAt = LocalDateTime.now();
 

@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.gizka.dto.CreateAppUserDto;
 import project.gizka.model.AppUser;
 import project.gizka.service.impl.AppUserService;
+import project.gizka.util.Converter;
 
 import java.util.List;
 
@@ -33,15 +35,17 @@ public class AppUserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AppUser> create(AppUser appUser){
+    public ResponseEntity<AppUser> create(CreateAppUserDto userDto){
+        AppUser appUser = Converter.getAppUser(userDto);
         AppUser createdUser = appUserService.create(appUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> edit(@PathVariable Long id,
-                                           AppUser updatedUser){
-        appUserService.update(id, updatedUser);
+                                           CreateAppUserDto userDto){
+        AppUser appUser = Converter.getAppUser(userDto);
+        appUserService.update(id, appUser);
         return ResponseEntity.ok().build();
     }
 

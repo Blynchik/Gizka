@@ -1,0 +1,1 @@
+INSERT INTO app_user(chat) values ('default telegram chat id');

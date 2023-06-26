@@ -40,12 +40,12 @@ public class AppUserService implements CRUDService {
 
     @Transactional
     @Override
-    public void update(Long id, AppUser updatedUser) {
+    public AppUser update(Long id, AppUser updatedUser) {
         AppUser appUser = appUserRepo.getReferenceById(id);
         updatedUser.setId(appUser.getId());
         updatedUser.setRegisteredAt(appUser.getRegisteredAt());
         updatedUser.setUpdatedAt(LocalDateTime.now());
-        appUserRepo.save(updatedUser);
+        return appUserRepo.save(updatedUser);
     }
 
     @Transactional

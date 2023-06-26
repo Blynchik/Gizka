@@ -41,15 +41,15 @@ public class AppUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<HttpStatus> edit(@PathVariable Long id,
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<AppUser> edit(@PathVariable Long id,
                                            CreateAppUserDto userDto){
         AppUser appUser = Converter.getAppUser(userDto);
-        appUserService.update(id, appUser);
-        return ResponseEntity.ok().build();
+        AppUser updatedUser = appUserService.update(id, appUser);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete/")
     public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id){
         appUserService.delete(id);
         return ResponseEntity.noContent().build();

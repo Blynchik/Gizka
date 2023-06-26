@@ -13,7 +13,7 @@ public interface CRUDService {
 
     AppUser create(AppUser appUser);
 
-    void update(Long id, AppUser updatedUser);
+    AppUser update(Long id, AppUser updatedUser);
 
     void delete(Long id);
 }

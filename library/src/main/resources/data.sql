@@ -1,1 +1,2 @@
-INSERT INTO app_user(chat) values ('default telegram chat id');
+INSERT INTO app_user(chat) VALUES ('default telegram chat id'),
+                                  ('another chat id');

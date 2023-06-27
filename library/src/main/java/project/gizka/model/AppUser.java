@@ -1,5 +1,6 @@
 package project.gizka.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AppUser {
 
     @Id

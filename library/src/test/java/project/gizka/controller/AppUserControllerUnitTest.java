@@ -45,6 +45,8 @@ class AppUserControllerUnitTest {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<AppUser> appUsers = response.getBody();
         Assertions.assertEquals(expectedUsers.size(), appUsers.size());
+
+        Mockito.verify(appUserService).getAll();
     }
 
 
@@ -65,11 +67,13 @@ class AppUserControllerUnitTest {
         AppUser appUser = responseEntity.getBody();
         Assertions.assertEquals(expectedAppUser.getId(), appUser.getId());
         Assertions.assertEquals(expectedAppUser.getChat(), appUser.getChat());
+
+        Mockito.verify(appUserService).getById(id);
     }
 
     @Test
     @DisplayName("POST /api/user/create создает нового пользователя и возвращает его c ответом 201")
-    void create_ReturnsValidResponseEntity() {
+    void create_ReturnsValidResponseEntityWithAppUser() {
         //given
         CreateAppUserDto userDto = new CreateAppUserDto("test chat id");
         AppUser appUser = new AppUser(1L, "test chat id", LocalDateTime.now(), LocalDateTime.now());
@@ -90,7 +94,7 @@ class AppUserControllerUnitTest {
 
     @Test
     @DisplayName("PUT /api/user/{id}/edit изменяет пользователя и возвращает его с ответом 200")
-    void edit_ReturnsValidResponseEntity() {
+    void edit_ReturnsValidResponseEntityWithAppUser() {
         //given
         Long id = 1L;
         CreateAppUserDto userDto = new CreateAppUserDto("new telegram chat id");
@@ -114,7 +118,7 @@ class AppUserControllerUnitTest {
 
     @Test
     @DisplayName("DELETE /api/user/{id}/delete удаляет пользователя и возвращает ответ 204")
-    public void delete_ReturnsValidResponseEntity() {
+    void deleteById_ReturnsValidResponseEntity() {
         // given
         Long id = 1L;
         Mockito.doNothing().when(appUserService).delete(id);

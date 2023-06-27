@@ -18,24 +18,24 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @Autowired
-    public AppUserController(AppUserService appUserService){
+    public AppUserController(AppUserService appUserService) {
         this.appUserService = appUserService;
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<AppUser>> getAll(){
+    public ResponseEntity<List<AppUser>> getAll() {
         List<AppUser> users = appUserService.getAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppUser> getById(@PathVariable Long id){
+    public ResponseEntity<AppUser> getById(@PathVariable Long id) {
         AppUser appUser = appUserService.getById(id).get();
         return ResponseEntity.ok(appUser);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AppUser> create(CreateAppUserDto userDto){
+    public ResponseEntity<AppUser> create(@RequestBody CreateAppUserDto userDto) {
         AppUser appUser = Converter.getAppUser(userDto);
         AppUser createdUser = appUserService.create(appUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -43,14 +43,14 @@ public class AppUserController {
 
     @PutMapping("/{id}/edit")
     public ResponseEntity<AppUser> edit(@PathVariable Long id,
-                                           CreateAppUserDto userDto){
+                                        @RequestBody CreateAppUserDto userDto) {
         AppUser appUser = Converter.getAppUser(userDto);
         AppUser updatedUser = appUserService.update(id, appUser);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
-    @DeleteMapping("/{id}/delete/")
-    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id){
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
         appUserService.delete(id);
         return ResponseEntity.noContent().build();
     }

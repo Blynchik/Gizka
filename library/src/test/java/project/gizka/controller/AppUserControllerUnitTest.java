@@ -1,12 +1,11 @@
 package project.gizka.controller;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +13,23 @@ import project.gizka.dto.CreateAppUserDto;
 import project.gizka.model.AppUser;
 import project.gizka.service.impl.AppUserService;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AppUserControllerUnitTest {
+
+    private static final Long ID_1 = 1L;
+    private static final Long ID_2 = 2L;
+    private static final String CHAT_1 = "telegram chat id";
+    private static final String CHAT_2 = "another chat id";
+
+    private AppUser user_1;
 
     @Mock
     AppUserService appUserService;
@@ -27,26 +37,33 @@ class AppUserControllerUnitTest {
     @InjectMocks
     AppUserController controller;
 
+    @BeforeEach
+    void setUp(){
+        user_1 = new AppUser(ID_1, CHAT_1, LocalDateTime.now().minusDays(2), LocalDateTime.now());
+    }
+
     @Test
     @DisplayName("GET /api/user/getAll возвращает ответ со статусом 200 и список пользователей")
     void getAll_ReturnsValidResponseEntityWithUsers() {
         //given
-        List<AppUser> expectedUsers = Arrays.asList(
-                new AppUser(1L, "telegram chat id 1", LocalDateTime.now(), LocalDateTime.now()),
-                new AppUser(2L, "telegram chat id 2", LocalDateTime.now(), LocalDateTime.now())
-        );
-        Mockito.when(appUserService.getAll()).thenReturn(expectedUsers);
+        AppUser user_2 = new AppUser(ID_2, CHAT_2, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        List<AppUser> expectedUsers = Arrays.asList(user_1, user_2);
+        when(appUserService.getAll()).thenReturn(expectedUsers);
 
         //when
         ResponseEntity<List<AppUser>> response = controller.getAll();
 
         //then
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<AppUser> appUsers = response.getBody();
-        Assertions.assertEquals(expectedUsers.size(), appUsers.size());
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        Mockito.verify(appUserService).getAll();
+        List<AppUser> appUsers = response.getBody();
+
+        assertEquals(expectedUsers.size(), appUsers.size());
+        assertAppUserEquals(expectedUsers.get(0), appUsers.get(0));
+        assertAppUserEquals(expectedUsers.get(1), appUsers.get(1));
+
+        verify(appUserService).getAll();
     }
 
 
@@ -54,82 +71,89 @@ class AppUserControllerUnitTest {
     @DisplayName("GET api/user/{id} возращает ответ со статусом 200 и пользователя")
     void getById_ReturnsValidResponseEntityWithAppUser() {
         //given
-        Long id = 1L;
-        AppUser expectedAppUser = new AppUser(id, "test chat id", LocalDateTime.now(), LocalDateTime.now());
-        Mockito.when(appUserService.getById(id)).thenReturn(Optional.of(expectedAppUser));
+        AppUser expectedUser = user_1;
+        when(appUserService.getById(ID_1)).thenReturn(Optional.of(expectedUser));
 
         //when
-        ResponseEntity<AppUser> responseEntity = controller.getById(id);
+        ResponseEntity<AppUser> responseEntity = controller.getById(ID_1);
 
         //then
-        Assertions.assertNotNull(responseEntity);
-        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        AppUser appUser = responseEntity.getBody();
-        Assertions.assertEquals(expectedAppUser.getId(), appUser.getId());
-        Assertions.assertEquals(expectedAppUser.getChat(), appUser.getChat());
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
-        Mockito.verify(appUserService).getById(id);
+        AppUser appUser = responseEntity.getBody();
+
+        assertAppUserEquals(expectedUser, appUser);
+
+        verify(appUserService).getById(ID_1);
     }
 
     @Test
     @DisplayName("POST /api/user/create создает нового пользователя и возвращает его c ответом 201")
     void create_ReturnsValidResponseEntityWithAppUser() {
         //given
-        CreateAppUserDto userDto = new CreateAppUserDto("test chat id");
-        AppUser appUser = new AppUser(1L, "test chat id", LocalDateTime.now(), LocalDateTime.now());
-        Mockito.when(appUserService.create(Mockito.any(AppUser.class))).thenReturn(appUser);
+        CreateAppUserDto userDto = new CreateAppUserDto(CHAT_1);
+        AppUser expectedUser = new AppUser(ID_1, CHAT_1, LocalDateTime.now(), LocalDateTime.now());
+        when(appUserService.create(any(AppUser.class))).thenReturn(expectedUser);
 
         //when
         ResponseEntity<AppUser> responseEntity = controller.create(userDto);
 
         //then
-        Assertions.assertNotNull(responseEntity);
-        Assertions.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        AppUser createdUser = responseEntity.getBody();
-        Assertions.assertEquals(appUser.getId(), createdUser.getId());
-        Assertions.assertEquals(userDto.getChat(), createdUser.getChat());
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 
-        Mockito.verify(appUserService).create(Mockito.any(AppUser.class));
+        AppUser createdUser = responseEntity.getBody();
+
+        assertAppUserEquals(expectedUser, createdUser);
+        assertTrue(expectedUser.getRegisteredAt().isEqual(createdUser.getUpdatedAt()));
+
+        verify(appUserService).create(any(AppUser.class));
     }
 
     @Test
     @DisplayName("PUT /api/user/{id}/edit изменяет пользователя и возвращает его с ответом 200")
     void edit_ReturnsValidResponseEntityWithAppUser() {
         //given
-        Long id = 1L;
-        CreateAppUserDto userDto = new CreateAppUserDto("new telegram chat id");
-        AppUser expectedUser = new AppUser(id, "new telegram chat id", LocalDateTime.now().minusDays(7), LocalDateTime.now());
-        Mockito.when(appUserService.update(Mockito.eq(id), Mockito.any(AppUser.class))).thenReturn(expectedUser);
+        CreateAppUserDto userDto = new CreateAppUserDto(CHAT_1);
+        AppUser expectedUser = user_1;
+        when(appUserService.update(eq(ID_1), any(AppUser.class))).thenReturn(expectedUser);
 
         //when
-        ResponseEntity<AppUser> response = controller.edit(id, userDto);
+        ResponseEntity<AppUser> response = controller.edit(ID_1, userDto);
 
         //then
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        AppUser updatedUser = response.getBody();
-        Assertions.assertEquals(expectedUser.getId(), updatedUser.getId());
-        Assertions.assertEquals(expectedUser.getChat(), updatedUser.getChat());
-        Assertions.assertTrue(Duration.between(updatedUser.getRegisteredAt(), expectedUser.getRegisteredAt()).getSeconds() < 1);
-        Assertions.assertTrue(Duration.between(updatedUser.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 1);
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        Mockito.verify(appUserService).update(Mockito.eq(id), Mockito.any(AppUser.class));
+        AppUser updatedUser = response.getBody();
+
+        assertAppUserEquals(expectedUser, updatedUser);
+        assertFalse(expectedUser.getRegisteredAt().isEqual(updatedUser.getUpdatedAt()));
+
+        verify(appUserService).update(eq(ID_1), any(AppUser.class));
     }
 
     @Test
     @DisplayName("DELETE /api/user/{id}/delete удаляет пользователя и возвращает ответ 204")
     void deleteById_ReturnsValidResponseEntity() {
         // given
-        Long id = 1L;
-        Mockito.doNothing().when(appUserService).delete(id);
+        doNothing().when(appUserService).delete(ID_1);
 
         // when
-        ResponseEntity<HttpStatus> response = controller.deleteById(id);
+        ResponseEntity<HttpStatus> response = controller.deleteById(ID_1);
 
         // then
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNotNull(response);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
-        Mockito.verify(appUserService).delete(id);
+        verify(appUserService).delete(ID_1);
+    }
+
+    private void assertAppUserEquals(AppUser expectedUser, AppUser actualUser) {
+        assertEquals(expectedUser.getId(), actualUser.getId());
+        assertEquals(expectedUser.getChat(), actualUser.getChat());
+        assertEquals(expectedUser.getRegisteredAt(), actualUser.getRegisteredAt());
+        assertEquals(expectedUser.getUpdatedAt(), actualUser.getUpdatedAt());
     }
 }

@@ -1,8 +1,8 @@
 package project.gizka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import project.gizka.dto.CreateAppUserDto;
 import project.gizka.model.AppUser;
@@ -21,34 +20,51 @@ import project.gizka.service.impl.AppUserService;
 
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 class AppUserControllerIntegrationTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    private static final Long ID_1 = 1L;
+    private static final Long ID_2 = 2L;
+    private static final String CHAT_1 = "telegram chat id";
+    private static final String CHAT_2 = "another chat id";
+    private final MockMvc mockMvc;
+    private final AppUserService appUserService;
+    private AppUser user_1;
 
     @Autowired
-    AppUserService appUserService;
+    AppUserControllerIntegrationTest(MockMvc mockMvc, AppUserService appUserService) {
+        this.mockMvc = mockMvc;
+        this.appUserService = appUserService;
+    }
+
+    @BeforeEach
+    void setUp() {
+        user_1 = new AppUser(ID_1, CHAT_1, LocalDateTime.now().minusDays(2), LocalDateTime.now());
+    }
 
     @Test
     @DisplayName("GET /api/user/getAll возвращает ответ со статусом 200 и список пользователей")
     void getAll_ReturnsValidResponseEntityWithUsers() throws Exception {
         //given
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/getAll");
-        AppUser expectedUser = new AppUser(1L, "default telegram chat id", LocalDateTime.now(), LocalDateTime.now());
-        AppUser anotherUser = new AppUser(2L, "another chat id", LocalDateTime.now(), LocalDateTime.now());
+        AppUser expectedUser = user_1;
+        AppUser anotherUser = new AppUser(ID_2, CHAT_2, LocalDateTime.now().minusHours(15), LocalDateTime.now());
         //when
         mockMvc.perform(requestBuilder)
                 //then
                 .andExpectAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-                        MockMvcResultMatchers.content().json("""
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().json("""
                                 [
                                   {
                                     "id": 1,
-                                    "chat": "default telegram chat id"
+                                    "chat": "telegram chat id"
                                   },
                                   {
                                     "id": 2,
@@ -56,44 +72,45 @@ class AppUserControllerIntegrationTest {
                                   }
                                 ]
                                 """),
-                        MockMvcResultMatchers.jsonPath("$[0].registeredAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$[0].updatedAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$[1].registeredAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$[1].updatedAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)),
-                        MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo(expectedUser.getId().intValue())),
-                        MockMvcResultMatchers.jsonPath("$[0].chat", Matchers.equalTo(expectedUser.getChat())),
-                        MockMvcResultMatchers.jsonPath("$[1].id", Matchers.equalTo(anotherUser.getId().intValue())),
-                        MockMvcResultMatchers.jsonPath("$[1].chat", Matchers.equalTo(anotherUser.getChat())));
+                        jsonPath("$", hasSize(2)),
+
+                        jsonPath("$[0].id", equalTo(expectedUser.getId().intValue())),
+                        jsonPath("$[0].chat", equalTo(expectedUser.getChat())),
+                        jsonPath("$[0].registeredAt").exists(),
+                        jsonPath("$[0].updatedAt").exists(),
+
+                        jsonPath("$[1].id", equalTo(anotherUser.getId().intValue())),
+                        jsonPath("$[1].chat", equalTo(anotherUser.getChat())),
+                        jsonPath("$[1].registeredAt").exists(),
+                        jsonPath("$[1].updatedAt").exists()
+                );
 
         Assertions.assertEquals(2, appUserService.getAll().size());
-
     }
-
 
     @Test
     @DisplayName("GET api/user/{id} возращает ответ со статусом 200 и пользователя")
     void getById_ReturnsValidResponseEntityWithUser() throws Exception {
         //given
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/1");
-        AppUser expectedUser = new AppUser(1L, "default telegram chat id", LocalDateTime.now(), LocalDateTime.now());
+        AppUser expectedUser = user_1;
 
         //when
         mockMvc.perform(requestBuilder)
                 //then
                 .andExpectAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-                        MockMvcResultMatchers.content().json("""
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().json("""
                                 {
                                     "id": 1,
-                                    "chat": "default telegram chat id"
+                                    "chat": "telegram chat id"
                                   }
                                 """),
-                        MockMvcResultMatchers.jsonPath("$.registeredAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.updatedAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo(expectedUser.getId().intValue())),
-                        MockMvcResultMatchers.jsonPath("$.chat", Matchers.equalTo(expectedUser.getChat())));
+                        jsonPath("$.id", equalTo(expectedUser.getId().intValue())),
+                        jsonPath("$.chat", equalTo(expectedUser.getChat())),
+                        jsonPath("$.registeredAt").exists(),
+                        jsonPath("$.updatedAt").exists());
     }
 
     @Test
@@ -112,18 +129,18 @@ class AppUserControllerIntegrationTest {
         mockMvc.perform(requestBuilder)
                 //then
                 .andExpectAll(
-                        MockMvcResultMatchers.status().isCreated(),
-                        MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-                        MockMvcResultMatchers.content().json("""
+                        status().isCreated(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().json("""
                                   {
                                     "id": 3,
                                     "chat": "test chat id"
                                   }
                                 """),
-                        MockMvcResultMatchers.jsonPath("$.registeredAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.updatedAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo(expectedUser.getId().intValue())),
-                        MockMvcResultMatchers.jsonPath("$.chat", Matchers.equalTo(expectedUser.getChat())));
+                        jsonPath("$.id", equalTo(expectedUser.getId().intValue())),
+                        jsonPath("$.chat", equalTo(expectedUser.getChat())),
+                        jsonPath("$.registeredAt").exists(),
+                        jsonPath("$.updatedAt").exists());
 
         Assertions.assertEquals(3, appUserService.getAll().size());
     }
@@ -134,9 +151,8 @@ class AppUserControllerIntegrationTest {
     @DisplayName("PUT /api/user/{id}/edit изменяет пользователя и возвращает его с ответом 200")
     void edit_ReturnsValidResponseEntityWithAppUser() throws Exception {
         //given
-        Long id = 1L;
         CreateAppUserDto userDto = new CreateAppUserDto("updated test chat id");
-        AppUser expectedUser = new AppUser(id, "updated test chat id", LocalDateTime.now(), LocalDateTime.now());
+        AppUser expectedUser = new AppUser(ID_1, "updated test chat id", user_1.getRegisteredAt(), LocalDateTime.now());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/user/1/edit")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(userDto));
@@ -145,18 +161,18 @@ class AppUserControllerIntegrationTest {
         mockMvc.perform(requestBuilder)
                 //then
                 .andExpectAll(
-                        MockMvcResultMatchers.status().isOk(),
-                        MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON),
-                        MockMvcResultMatchers.content().json("""
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().json("""
                                   {
                                     "id": 1,
                                     "chat": "updated test chat id"
                                   }
                                 """),
-                        MockMvcResultMatchers.jsonPath("$.registeredAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.updatedAt").exists(),
-                        MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo(id.intValue())),
-                        MockMvcResultMatchers.jsonPath("$.chat", Matchers.equalTo(expectedUser.getChat())));
+                        jsonPath("$.id", equalTo(ID_1.intValue())),
+                        jsonPath("$.chat", equalTo(expectedUser.getChat())),
+                        jsonPath("$.registeredAt").exists(),
+                        jsonPath("$.updatedAt").exists());
     }
 
     @Test
@@ -164,17 +180,16 @@ class AppUserControllerIntegrationTest {
     @DirtiesContext
     @DisplayName("DELETE /api/user/{id}/delete удаляет пользователя и возвращает ответ 204")
     void deleteById_ReturnsValidResponseEntity() throws Exception {
-        Long id = 1L;
         //given
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/" + id + "/delete");
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/" + ID_1 + "/delete");
 
         //when
         mockMvc.perform(requestBuilder)
                 //then
                 .andExpectAll(
-                        MockMvcResultMatchers.status().isNoContent()
+                        status().isNoContent()
                 );
 
-        Assertions.assertTrue(appUserService.getById(id).isEmpty());
+        Assertions.assertTrue(appUserService.getById(ID_1).isEmpty());
     }
 }

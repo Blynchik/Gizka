@@ -57,4 +57,8 @@ public class AppUserService implements CRUDService {
     public boolean checkExistence(Long id) {
         return appUserRepo.existsById(id);
     }
+
+    public Optional<AppUser> getByChat(String chat) {
+        return appUserRepo.findByChat(chat);
+    }
 }

@@ -1,5 +1,6 @@
 package project.gizka.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -15,8 +16,6 @@ import project.gizka.service.impl.AppUserService;
 import project.gizka.validator.AppUserValidator;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static project.gizka.util.Converter.getAppUserFrom;
 
@@ -34,12 +33,24 @@ public class AppUserController {
     }
 
     @GetMapping("/getAll")
+    @Operation(summary = """
+            Метод возвращает список пользователей со всей информацией
+            о них (id, chat, registeredAt, updatedAt) с кодом 200.
+            Если пользователей нет, то возвращается пустой список
+            с кодом 200.
+            """)
     public ResponseEntity<List<AppUser>> getAll() {
         List<AppUser> users = appUserService.getAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = """
+            Метод возвращает информацию о пользователе (id, chat, registeredAt, updatedAt)
+            по его id с кодом 200.
+            Если такого id не существует, то возвращается сообщение об ошибке и
+            времени ошибки с кодом 404.
+            """)
     public ResponseEntity<AppUser> getById(@PathVariable Long id) {
         checkUserExistence(id);
         var optionalUser = appUserService.getById(id);
@@ -47,6 +58,14 @@ public class AppUserController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = """
+            Метод создает, сохраняет и возвращает нового пользователя
+            (id, chat, registeredAt, updatedAt)в БД с кодом 201.
+            Для создания пользователя требуется ввести чат.
+            Чат не может бысть пустым и доллжен быть уникальным.
+            Если чат пустой или не уникальный, возвращается
+            сообщение об ошибке с временем ошибки с кодом 400.
+            """)
     public ResponseEntity<AppUser> create(@RequestBody @Valid CreateAppUserDto userDto,
                                           BindingResult bindingResult) {
         checkForErrors(userDto,bindingResult);
@@ -56,6 +75,16 @@ public class AppUserController {
     }
 
     @PutMapping("/{id}/edit")
+    @Operation(summary = """
+            Метод редактирует существующего пользователя по его id
+            и возвращает отредактированного пользователя
+            (id, chat, registeredAt, updatedAt) с кодом 200.
+            Переданный новый чат не может бысть пустым и доллжен быть уникальным.
+            Если чат пустой или не уникальный, возвращается
+            сообщение об ошибке с временем ошибки с кодом 400.
+            Если такого id не существует, то возвращается сообщение об ошибке и
+            времени ошибки с кодом 404.
+            """)
     public ResponseEntity<AppUser> edit(@PathVariable Long id,
                                         @RequestBody @Valid CreateAppUserDto userDto,
                                         BindingResult bindingResult) {
@@ -63,10 +92,16 @@ public class AppUserController {
         checkForErrors(userDto,bindingResult);
         AppUser appUser = getAppUserFrom(userDto);
         AppUser updatedUser = appUserService.update(id, appUser);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}/delete")
+    @Operation(summary = """
+            Метод удаляет пользователя по его id
+            и возвращает код 204.
+            Если такого id не существует, то возвращается сообщение об ошибке и
+            времени ошибки с кодом 404.
+            """)
     public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
         checkUserExistence(id);
         appUserService.delete(id);

@@ -53,4 +53,8 @@ public class AppUserService implements CRUDService {
     public void delete(Long id) {
         appUserRepo.deleteById(id);
     }
+
+    public boolean checkExistence(Long id) {
+        return appUserRepo.existsById(id);
+    }
 }

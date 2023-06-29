@@ -10,7 +10,7 @@ public class Converter {
 
     private final static ModelMapper modelMapper = new ModelMapper();
 
-    public static AppUser getAppUser(CreateAppUserDto userDto){
+    public static AppUser getAppUserFrom(CreateAppUserDto userDto){
         return modelMapper.map(userDto, AppUser.class);
     }
 }

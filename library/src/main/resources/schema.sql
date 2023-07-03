@@ -8,3 +8,6 @@ create table app_user
     chat          varchar(255) not null unique,
     primary key (id)
 );
+
+INSERT INTO app_user(chat) VALUES ('telegram chat id'),
+                                  ('another chat id');

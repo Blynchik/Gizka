@@ -1,12 +1,11 @@
 package project.gizka.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.HashMap;
 
 @Component
 public class UpdateController {
@@ -24,7 +23,7 @@ public class UpdateController {
             Message originalMessage = update.getMessage();
             String text = originalMessage.getText();
             final RestTemplate restTemplate = new RestTemplate();
-            HashMap response = restTemplate.getForObject(url + text, HashMap.class);
+            ResponseEntity<?> response = restTemplate.getForObject(url + text, ResponseEntity.class);
             System.out.println(response);
             SendMessage message = new SendMessage();
             message.setChatId(originalMessage.getChatId().toString());

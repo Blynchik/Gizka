@@ -6,7 +6,8 @@
     <modules>
         <module>rest</module>
         <module>entity</module>
-    </modules>
+		<module>bot</module>
+	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>

@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>library</module>
+        <module>rest</module>
+        <module>entity</module>
     </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>

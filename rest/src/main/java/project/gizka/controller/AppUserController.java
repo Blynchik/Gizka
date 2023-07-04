@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import project.gizka.dto.CreateAppUserDto;
+import project.gizka.appUser.dto.CreateAppUserDto;
+import project.gizka.appUser.model.AppUser;
 import project.gizka.exception.notFound.AppUserNotFoundException;
 import project.gizka.exception.validation.AppUserValidationException;
-import project.gizka.model.AppUser;
 import project.gizka.service.impl.AppUserService;
 import project.gizka.validator.AppUserValidator;
 
@@ -68,7 +68,7 @@ public class AppUserController {
             """)
     public ResponseEntity<AppUser> create(@RequestBody @Valid CreateAppUserDto userDto,
                                           BindingResult bindingResult) {
-        checkForErrors(userDto,bindingResult);
+        checkForErrors(userDto, bindingResult);
         AppUser appUser = getAppUserFrom(userDto);
         AppUser createdUser = appUserService.create(appUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -89,7 +89,7 @@ public class AppUserController {
                                         @RequestBody @Valid CreateAppUserDto userDto,
                                         BindingResult bindingResult) {
         checkUserExistence(id);
-        checkForErrors(userDto,bindingResult);
+        checkForErrors(userDto, bindingResult);
         AppUser appUser = getAppUserFrom(userDto);
         AppUser updatedUser = appUserService.update(id, appUser);
         return ResponseEntity.ok(updatedUser);
@@ -108,16 +108,16 @@ public class AppUserController {
         return ResponseEntity.noContent().build();
     }
 
-    private void checkUserExistence(Long id){
+    private void checkUserExistence(Long id) {
         if (!appUserService.checkExistence(id)) {
             throw new AppUserNotFoundException("ID " + id + " not found");
         }
     }
 
     private void checkForErrors(CreateAppUserDto userDto,
-                                BindingResult bindingResult){
-        appUserValidator.validate(userDto,bindingResult);
-        if(bindingResult.hasErrors()){
+                                BindingResult bindingResult) {
+        appUserValidator.validate(userDto, bindingResult);
+        if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             throw new AppUserValidationException(errorMessages);

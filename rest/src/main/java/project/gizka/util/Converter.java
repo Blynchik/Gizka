@@ -2,8 +2,8 @@ package project.gizka.util;
 
 import lombok.experimental.UtilityClass;
 import org.modelmapper.ModelMapper;
-import project.gizka.dto.CreateAppUserDto;
-import project.gizka.model.AppUser;
+import project.gizka.appUser.dto.CreateAppUserDto;
+import project.gizka.appUser.model.AppUser;
 
 @UtilityClass
 public class Converter {

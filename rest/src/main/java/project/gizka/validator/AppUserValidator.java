@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import project.gizka.dto.CreateAppUserDto;
+import project.gizka.appUser.dto.CreateAppUserDto;
 import project.gizka.service.impl.AppUserService;
 
 @Component

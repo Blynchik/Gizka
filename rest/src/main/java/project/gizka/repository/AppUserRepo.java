@@ -2,7 +2,8 @@ package project.gizka.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import project.gizka.model.AppUser;
+import project.gizka.appUser.model.AppUser;
+
 
 import java.util.Optional;
 

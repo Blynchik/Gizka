@@ -1,6 +1,7 @@
 package project.gizka.service;
 
-import project.gizka.model.AppUser;
+
+import project.gizka.appUser.model.AppUser;
 
 import java.util.List;
 import java.util.Optional;

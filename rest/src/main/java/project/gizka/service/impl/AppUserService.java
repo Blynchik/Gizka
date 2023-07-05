@@ -43,6 +43,7 @@ public class AppUserService implements CRUDService {
     public AppUser update(Long id, AppUser updatedUser) {
         AppUser appUser = appUserRepo.getReferenceById(id);
         updatedUser.setId(appUser.getId());
+        updatedUser.setChat(appUser.getChat());
         updatedUser.setRegisteredAt(appUser.getRegisteredAt());
         updatedUser.setUpdatedAt(LocalDateTime.now());
         return appUserRepo.save(updatedUser);

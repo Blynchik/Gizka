@@ -31,6 +31,9 @@ public class AppUser {
     @NotEmpty(message = "Chat should not be empty")
     private String chat;
 
+    @Column(name = "line")
+    private String line;
+
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime registeredAt = LocalDateTime.now();

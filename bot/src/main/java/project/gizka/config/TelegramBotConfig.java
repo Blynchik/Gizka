@@ -11,7 +11,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBotConfig {
 
     @Bean
-    TelegramBotsApi telegramBotsApi() throws TelegramApiException{
+    TelegramBotsApi telegramBotsApi() throws TelegramApiException {
         return new TelegramBotsApi(DefaultBotSession.class);
     }
 

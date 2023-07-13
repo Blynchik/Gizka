@@ -56,7 +56,7 @@ public class RestClient {
         return responseText;
     }
 
-    public String updateUser(String userId, String chatId, String slogan) {
+    public String updateUser(String chatId, String userId, String slogan) {
 
         CreateAppUserDto userDto = new CreateAppUserDto();
         userDto.setChat(chatId);
@@ -70,7 +70,6 @@ public class RestClient {
         } else {
             responseText = "An error occurred while trying to update user";
         }
-
         return responseText;
     }
 }

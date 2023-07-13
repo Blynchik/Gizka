@@ -3,19 +3,17 @@ package project.gizka;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import project.gizka.command.Command;
 import project.gizka.command.CommandMap;
-import project.gizka.command.impl.AbstractCommand;
-import project.gizka.command.impl.EditCommand;
+import project.gizka.command.AbstractCommand;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -23,7 +21,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String botUsername;
     private final String botToken;
     private final CommandMap commands;
-    private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
+    private AbstractCommand currentCommand;
 
     @Autowired
     public TelegramBot(TelegramBotsApi telegramBotsApi,
@@ -48,16 +46,26 @@ public class TelegramBot extends TelegramLongPollingBot {
                 SendMessage message;
 
                 if (commandMap.containsKey(commandKey)) {
-                    AbstractCommand command = commandMap.get(commandKey);
+                    currentCommand = commandMap.get(commandKey);
+                }
 
-                    message = command.handle(update);
-                    bindingBy.put(chatId, commandKey);
+                if (currentCommand == null) {
+                    message = new SendMessage(chatId, "Unknown command");
                     sendAnswerMessage(message);
+                }
 
-                } else if (bindingBy.containsKey(chatId)) {
-                    AbstractCommand command = commandMap.get(chatId);
-                    message = commandMap.get(bindingBy.get(chatId)).callback(update);
-                    bindingBy.remove(chatId);
+                if (!currentCommand.checkReadyForProcess()) {
+                    try {
+                        message = currentCommand.handle(update);
+                    } catch (HttpClientErrorException.NotFound e) {
+                        String responseBody = e.getResponseBodyAsString();
+                        message = new SendMessage(chatId, responseBody);
+                        sendAnswerMessage(message);
+                    } catch (Exception e) {
+                        String responseBody = e.getMessage();
+                        message = new SendMessage(chatId, responseBody);
+                        sendAnswerMessage(message);
+                    }
                     sendAnswerMessage(message);
                 }
             }

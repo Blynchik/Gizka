@@ -89,7 +89,13 @@ public class AppUserController {
                                         @RequestBody @Valid CreateAppUserDto userDto,
                                         BindingResult bindingResult) {
         checkUserExistence(id);
-        checkForErrors(userDto, bindingResult);
+
+        if(bindingResult.hasErrors()){
+            List<String> errorMessages = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            throw new AppUserValidationException(errorMessages);
+        }
+
         AppUser appUser = getAppUserFrom(userDto);
         AppUser updatedUser = appUserService.update(id, appUser);
         return ResponseEntity.ok(updatedUser);

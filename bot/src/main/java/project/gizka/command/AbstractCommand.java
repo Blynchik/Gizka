@@ -13,8 +13,7 @@ public abstract class AbstractCommand {
     private int state;
     private boolean readyForProcess;
 
-    public AbstractCommand(int numOfArgs) {
-        this.numOfArgs = numOfArgs;
+    public AbstractCommand() {
         this.state = 0;
         this.readyForProcess = false;
     }

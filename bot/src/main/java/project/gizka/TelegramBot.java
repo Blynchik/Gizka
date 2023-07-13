@@ -3,15 +3,14 @@ package project.gizka;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import project.gizka.command.CommandMap;
 import project.gizka.command.AbstractCommand;
+import project.gizka.command.CommandMap;
 
 import java.util.Map;
 
@@ -38,46 +37,32 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message originalMessage = update.getMessage();
-            String chatId = originalMessage.getChatId().toString();
 
             if (originalMessage.hasText()) {
                 String commandKey = originalMessage.getText();
                 Map<String, AbstractCommand> commandMap = commands.getCommands();
-                SendMessage message;
+                currentCommand = commandMap.getOrDefault(commandKey, currentCommand);
 
-                if (commandMap.containsKey(commandKey)) {
-                    currentCommand = commandMap.get(commandKey);
-                }
-
-                if (currentCommand == null) {
-                    message = new SendMessage(chatId, "Unknown command");
-                    sendAnswerMessage(message);
-                }
-
-                if (!currentCommand.checkReadyForProcess()) {
+                if (currentCommand != null && !currentCommand.checkReadyForProcess()) {
+                    SendMessage responseMessage;
                     try {
-                        message = currentCommand.handle(update);
-                    } catch (HttpClientErrorException.NotFound e) {
-                        String responseBody = e.getResponseBodyAsString();
-                        message = new SendMessage(chatId, responseBody);
-                        sendAnswerMessage(message);
+                        responseMessage = currentCommand.handle(update);
                     } catch (Exception e) {
                         String responseBody = e.getMessage();
-                        message = new SendMessage(chatId, responseBody);
-                        sendAnswerMessage(message);
+                        responseMessage = new SendMessage(originalMessage.getChatId().toString(), responseBody);
                     }
-                    sendAnswerMessage(message);
+
+                    sendResponseMessage(responseMessage);
                 }
             }
         }
     }
 
-    public void sendAnswerMessage(SendMessage message) {
+    private void sendResponseMessage(SendMessage message) {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            //TODO
-            e.printStackTrace();
+            //TODO handle
         }
     }
 

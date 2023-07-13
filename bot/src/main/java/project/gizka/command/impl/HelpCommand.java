@@ -14,10 +14,10 @@ import java.util.List;
 public class HelpCommand extends AbstractCommand {
 
     private final List<String> commands;
-    private static final int NUM_OF_ARGS = 0;
+    private final int numOfArgs = 0;
 
     public HelpCommand(List<String> commands) {
-        super(NUM_OF_ARGS);
+        super.setNumOfArgs(numOfArgs);
         this.commands = commands;
     }
 

@@ -2,7 +2,10 @@ package project.gizka.command;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project.gizka.command.impl.*;
+import project.gizka.command.impl.CreateCommand;
+import project.gizka.command.impl.EditCommand;
+import project.gizka.command.impl.GetCommand;
+import project.gizka.command.impl.HelpCommand;
 import project.gizka.service.RestClient;
 
 import java.util.List;

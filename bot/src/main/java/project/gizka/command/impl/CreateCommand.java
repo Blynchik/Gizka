@@ -1,22 +1,25 @@
 package project.gizka.command.impl;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 import project.gizka.service.RestClient;
 
+@Getter
+@Setter
 public class CreateCommand extends AbstractCommand {
 
     private final String command;
     private final RestClient restClient;
-    private static final int NUM_OF_ARGS = 1;
+    private final int numOfArgs = 1;
     private String slogan;
 
 
-
-    public CreateCommand(String command, RestClient restClient){
-        super(NUM_OF_ARGS);
+    public CreateCommand(String command, RestClient restClient) {
+        super.setNumOfArgs(1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -28,19 +31,17 @@ public class CreateCommand extends AbstractCommand {
         String chatId = message.getChatId().toString();
         String text = "";
 
-        if (this.getState() == NUM_OF_ARGS + 1){
+        if (this.getState() == numOfArgs + 1) {
             slogan = message.getText();
             text = restClient.createUser(chatId, slogan);
-        }
-
-        if(this.getState() == 1){
+        } else if (this.getState() == 1) {
             text = askSlogan();
         }
 
         return new SendMessage(chatId, text);
     }
 
-    private String askSlogan(){
+    private String askSlogan() {
         return "Введите девиз";
     }
 }

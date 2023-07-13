@@ -1,22 +1,25 @@
 package project.gizka.command.impl;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 import project.gizka.service.RestClient;
 
+@Getter
+@Setter
 public class EditCommand extends AbstractCommand {
 
     private final String command;
     private final RestClient restClient;
+    private final int numOfArgs = 2;
     private String userId;
     private String slogan;
 
-    private static final int NUM_OF_ARGS = 2;
-
     public EditCommand(String command, RestClient restClient) {
-        super(2);
+        super.setNumOfArgs(numOfArgs);
         this.command = command;
         this.restClient = restClient;
     }
@@ -29,17 +32,13 @@ public class EditCommand extends AbstractCommand {
 
         String text = "";
 
-        if(this.getState() == NUM_OF_ARGS + 1){
+        if (this.getState() == numOfArgs + 1) {
             slogan = message.getText();
             text = restClient.updateUser(chatId, userId, slogan);
-        }
-
-        if (this.getState() == 2) {
+        } else if (this.getState() == 2) {
             userId = message.getText();
             text = askSlogan();
-        }
-
-        if (this.getState() == 1) {
+        } else if (this.getState() == 1) {
             text = askId();
         }
 

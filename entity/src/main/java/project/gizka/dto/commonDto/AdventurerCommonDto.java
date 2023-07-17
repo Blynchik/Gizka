@@ -1,5 +1,6 @@
 package project.gizka.dto.commonDto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,7 @@ public class AdventurerCommonDto {
     private String firstName;
     private String lastName;
     private LocalDateTime createdAt;
+    private int strength;
+    private int dexterity;
+    private int constitution;
 }

@@ -1,10 +1,7 @@
 package project.gizka.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,12 +25,14 @@ public class Adventurer {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private AppUser appUser;
 
+    @Column(name = "first_name")
     @NotBlank(message = "Name should not be empty")
     @NotNull(message = "Name should not be empty")
     @NotEmpty(message = "Name should not be empty")
     @Size(min = 1, max = 20, message = "Name should be less 20 than symbols")
     private String firstName;
 
+    @Column(name = "last_name")
     @NotBlank(message = "Surname should not be empty")
     @NotNull(message = "Surname should not be empty")
     @NotEmpty(message = "Surname should not be empty")
@@ -43,4 +42,16 @@ public class Adventurer {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "strength")
+    @Min(value = 1, message = "Strength should be more than 0")
+    private int strength;
+
+    @Column(name = "dexterity")
+    @Min(value = 1, message = "Dexterity should be more than 0")
+    private int dexterity;
+
+    @Column(name = "constitution")
+    @Min(value = 1, message = "Dexterity should be more than 0")
+    private int constitution;
 }

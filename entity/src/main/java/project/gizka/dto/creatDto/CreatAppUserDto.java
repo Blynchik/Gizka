@@ -1,8 +1,6 @@
-package project.gizka.appUser.dto;
+package project.gizka.dto.creatDto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,12 +8,13 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class CreateAppUserDto {
+public class CreatAppUserDto {
 
     @NotBlank(message = "Chat should not be empty")
     @NotNull(message = "Chat should not be empty")
     @NotEmpty(message = "Chat should not be empty")
     private String chat;
 
+    @Size(min = 0, max = 100, message = "Slogan should be less than 100 symbols")
     private String line;
 }

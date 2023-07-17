@@ -8,14 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import project.gizka.appUser.dto.CreateAppUserDto;
-import project.gizka.appUser.model.AppUser;
+import project.gizka.dto.commonDto.AppUserCommonDto;
+import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.model.AppUser;
 import project.gizka.exception.notFound.AppUserNotFoundException;
 import project.gizka.exception.validation.AppUserValidationException;
 import project.gizka.service.impl.AppUserService;
+import project.gizka.util.Converter;
 import project.gizka.validator.AppUserValidator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static project.gizka.util.Converter.getAppUserFrom;
 
@@ -39,9 +42,12 @@ public class AppUserController {
             Если пользователей нет, то возвращается пустой список
             с кодом 200.
             """)
-    public ResponseEntity<List<AppUser>> getAll() {
+    public ResponseEntity<List<AppUserCommonDto>> getAll() {
         List<AppUser> users = appUserService.getAll();
-        return ResponseEntity.ok(users);
+        List<AppUserCommonDto> usersDto = users.stream()
+                .map(Converter ::getUserDtoFrom)
+                .toList();
+        return ResponseEntity.ok(usersDto);
     }
 
     @GetMapping("/{id}")
@@ -51,10 +57,11 @@ public class AppUserController {
             Если такого id не существует, то возвращается сообщение об ошибке и
             времени ошибки с кодом 404.
             """)
-    public ResponseEntity<AppUser> getById(@PathVariable Long id) {
+    public ResponseEntity<AppUserCommonDto> getById(@PathVariable Long id) {
         checkUserExistence(id);
         var optionalUser = appUserService.getById(id);
-        return ResponseEntity.ok(optionalUser.get());
+        AppUserCommonDto userDto = Converter.getUserDtoFrom(optionalUser.get());
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/create")
@@ -66,12 +73,13 @@ public class AppUserController {
             Если чат пустой или не уникальный, возвращается
             сообщение об ошибке с временем ошибки с кодом 400.
             """)
-    public ResponseEntity<AppUser> create(@RequestBody @Valid CreateAppUserDto userDto,
+    public ResponseEntity<AppUserCommonDto> create(@RequestBody @Valid CreatAppUserDto userDto,
                                           BindingResult bindingResult) {
         checkForErrors(userDto, bindingResult);
         AppUser appUser = getAppUserFrom(userDto);
         AppUser createdUser = appUserService.create(appUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        AppUserCommonDto createdUserDto = Converter.getUserDtoFrom(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto);
     }
 
     @PutMapping("/{id}/edit")
@@ -85,8 +93,8 @@ public class AppUserController {
             Если такого id не существует, то возвращается сообщение об ошибке и
             времени ошибки с кодом 404.
             """)
-    public ResponseEntity<AppUser> edit(@PathVariable Long id,
-                                        @RequestBody @Valid CreateAppUserDto userDto,
+    public ResponseEntity<AppUserCommonDto> edit(@PathVariable Long id,
+                                        @RequestBody @Valid CreatAppUserDto userDto,
                                         BindingResult bindingResult) {
         checkUserExistence(id);
 
@@ -98,7 +106,8 @@ public class AppUserController {
 
         AppUser appUser = getAppUserFrom(userDto);
         AppUser updatedUser = appUserService.update(id, appUser);
-        return ResponseEntity.ok(updatedUser);
+        AppUserCommonDto updatedUserDto = Converter.getUserDtoFrom(updatedUser);
+        return ResponseEntity.ok(updatedUserDto);
     }
 
     @DeleteMapping("/{id}/delete")
@@ -120,7 +129,7 @@ public class AppUserController {
         }
     }
 
-    private void checkForErrors(CreateAppUserDto userDto,
+    private void checkForErrors(CreatAppUserDto userDto,
                                 BindingResult bindingResult) {
         appUserValidator.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {

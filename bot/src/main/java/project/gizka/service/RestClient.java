@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import project.gizka.appUser.dto.CreateAppUserDto;
-import project.gizka.appUser.model.AppUser;
+import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.model.AppUser;
 
 import java.util.Objects;
 
@@ -40,7 +40,7 @@ public class RestClient {
 
     public String createUser(String chatId, String slogan) {
 
-        CreateAppUserDto userDto = new CreateAppUserDto();
+        CreatAppUserDto userDto = new CreatAppUserDto();
         userDto.setChat(chatId);
         userDto.setLine(slogan);
 
@@ -58,7 +58,7 @@ public class RestClient {
 
     public String updateUser(String chatId, String userId, String slogan) {
 
-        CreateAppUserDto userDto = new CreateAppUserDto();
+        CreatAppUserDto userDto = new CreatAppUserDto();
         userDto.setChat(chatId);
         userDto.setLine(slogan);
 

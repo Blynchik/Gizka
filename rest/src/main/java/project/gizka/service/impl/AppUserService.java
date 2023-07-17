@@ -3,7 +3,7 @@ package project.gizka.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.gizka.appUser.model.AppUser;
+import project.gizka.model.AppUser;
 import project.gizka.repository.AppUserRepo;
 import project.gizka.service.CRUDService;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class AppUserService implements CRUDService {
+public class AppUserService implements CRUDService<AppUser> {
 
     private final AppUserRepo appUserRepo;
 

@@ -1,20 +1,18 @@
 package project.gizka.service;
 
 
-import project.gizka.appUser.model.AppUser;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUDService {
+public interface CRUDService<T>{
 
-    List<AppUser> getAll();
+    List<T> getAll();
 
-    Optional<AppUser> getById(Long id);
+    Optional<T> getById(Long id);
 
-    AppUser create(AppUser appUser);
+    T create(T entity);
 
-    AppUser update(Long id, AppUser updatedUser);
+    T update(Long id, T updatedEntity);
 
     void delete(Long id);
 }

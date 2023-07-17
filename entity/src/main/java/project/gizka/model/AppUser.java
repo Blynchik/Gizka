@@ -1,13 +1,12 @@
-package project.gizka.appUser.model;
+package project.gizka.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "app_user")
@@ -32,6 +31,7 @@ public class AppUser {
     private String chat;
 
     @Column(name = "line")
+    @Size(min = 0, max = 100, message = "Slogan should be less than 100 symbols")
     private String line;
 
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
@@ -41,4 +41,7 @@ public class AppUser {
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.LAZY)
+    private List<Adventurer> adventurers;
 }

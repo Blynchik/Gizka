@@ -7,9 +7,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AppUserValidationException extends ValidationException{
+public class AdventurerValidationException extends ValidationException{
     private List<String> errorMessages;
-    public AppUserValidationException(List<String> errorMessages){
+
+    public AdventurerValidationException(List<String> errorMessages){
         super(errorMessages);
     }
 }

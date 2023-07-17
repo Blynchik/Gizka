@@ -7,9 +7,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AppUserValidationException extends ValidationException{
+public class ValidationException extends RuntimeException {
     private List<String> errorMessages;
-    public AppUserValidationException(List<String> errorMessages){
-        super(errorMessages);
+    public ValidationException(List<String> errorMessages){
+        this.errorMessages = errorMessages;
     }
 }

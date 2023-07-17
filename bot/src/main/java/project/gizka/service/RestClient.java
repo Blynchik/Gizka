@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import project.gizka.dto.creatDto.CreatAdventurerDto;
 import project.gizka.dto.creatDto.CreatAppUserDto;
 import project.gizka.model.AppUser;
 
@@ -26,7 +27,7 @@ public class RestClient {
     }
 
     public String getUserById(String userId) {
-        ResponseEntity<?> response = restTemplate.getForEntity(baseUrl + "/user/" + userId, Object.class);
+        var response = restTemplate.getForEntity(baseUrl + "/user/" + userId, Object.class);
         String responseText;
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -44,7 +45,7 @@ public class RestClient {
         userDto.setChat(chatId);
         userDto.setLine(slogan);
 
-        var response = restTemplate.postForEntity(baseUrl + "/user/create", userDto, AppUser.class);
+        var response = restTemplate.postForEntity(baseUrl + "/user/create", userDto, Object.class);
         String responseText;
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
@@ -62,7 +63,7 @@ public class RestClient {
         userDto.setChat(chatId);
         userDto.setLine(slogan);
 
-        var response = restTemplate.exchange(baseUrl + "/user/" + userId + "/edit", HttpMethod.PUT, new HttpEntity<>(userDto), AppUser.class);
+        var response = restTemplate.exchange(baseUrl + "/user/" + userId + "/edit", HttpMethod.PUT, new HttpEntity<>(userDto), Object.class);
         String responseText;
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -70,6 +71,40 @@ public class RestClient {
         } else {
             responseText = "An error occurred while trying to update user";
         }
+        return responseText;
+    }
+
+    public String createAdventurer(String firstName, String lastName){
+        CreatAdventurerDto adventurerDto = new CreatAdventurerDto();
+
+        adventurerDto.setFirstName(firstName);
+        adventurerDto.setLastName(lastName);
+        adventurerDto.setStrength(1);
+        adventurerDto.setDexterity(1);
+        adventurerDto.setConstitution(1);
+
+        var response = restTemplate.postForEntity(baseUrl + "/adventurer/create", adventurerDto, Object.class);
+        String responseText;
+
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            responseText = "New adventurer successfully created:\n" + Objects.requireNonNull(response.getBody());
+        } else {
+            responseText = "An error occurred while trying to create a new adventurer";
+        }
+
+        return responseText;
+    }
+
+    public String getAdventurerById(String adventurerId) {
+        var response = restTemplate.getForEntity(baseUrl + "/adventurer/" + adventurerId, Object.class);
+        String responseText;
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            responseText = "Found adventurer:\n" + Objects.requireNonNull(response.getBody());
+        } else {
+            responseText = "An error occurred while trying to get adventurer";
+        }
+
         return responseText;
     }
 }

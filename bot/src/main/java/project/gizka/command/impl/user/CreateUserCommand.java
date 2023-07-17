@@ -1,4 +1,4 @@
-package project.gizka.command.impl;
+package project.gizka.command.impl.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,20 +8,22 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 import project.gizka.service.RestClient;
 
-
 @Getter
 @Setter
-public class GetCommand extends AbstractCommand {
+public class CreateUserCommand extends AbstractCommand {
+
     private final String command;
     private final RestClient restClient;
     private final int numOfArgs = 1;
-    private String userId;
+    private String slogan;
 
-    public GetCommand(String command, RestClient restClient) {
+
+    public CreateUserCommand(String command, RestClient restClient) {
         super.setNumOfArgs(numOfArgs);
         this.command = command;
         this.restClient = restClient;
     }
+
 
     @Override
     public SendMessage handle(Update update) {
@@ -30,16 +32,16 @@ public class GetCommand extends AbstractCommand {
         String text = "";
 
         if (this.getState() == numOfArgs + 1) {
-            userId = message.getText();
-            text = restClient.getUserById(userId);
+            slogan = message.getText();
+            text = restClient.createUser(chatId, slogan);
         } else if (this.getState() == 1) {
-            text = askId();
+            text = askSlogan();
         }
 
         return new SendMessage(chatId, text);
     }
 
-    private String askId() {
-        return "Введите id";
+    private String askSlogan() {
+        return "Введите девиз";
     }
 }

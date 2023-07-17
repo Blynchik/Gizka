@@ -34,6 +34,9 @@ public class AdventurerService implements CRUDService<Adventurer>{
     @Transactional
     @Override
     public Adventurer create(Adventurer adventurer) {
+        adventurer.setStrength(5);
+        adventurer.setDexterity(5);
+        adventurer.setConstitution(5);
         return adventurerRepo.save(adventurer);
     }
 

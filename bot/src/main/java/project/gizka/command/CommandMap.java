@@ -2,9 +2,11 @@ package project.gizka.command;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project.gizka.command.impl.CreateCommand;
-import project.gizka.command.impl.EditCommand;
-import project.gizka.command.impl.GetCommand;
+import project.gizka.command.impl.adventurer.CreateAdventurerCommand;
+import project.gizka.command.impl.adventurer.GetAdventurerCommand;
+import project.gizka.command.impl.user.CreateUserCommand;
+import project.gizka.command.impl.user.EditUserCommand;
+import project.gizka.command.impl.user.GetUserCommand;
 import project.gizka.command.impl.HelpCommand;
 import project.gizka.service.RestClient;
 
@@ -27,11 +29,15 @@ public class CommandMap {
                         "/help - все команды",
                         "/get - получить пользователя по id",
                         "/create - создать пользователя",
-                        "/edit - изменить пользователя")
+                        "/edit - изменить пользователя",
+                        "/hero - создать героя",
+                        "/show - получить героя по id")
                 ),
-                "/get", new GetCommand("/get", restClient),
-                "/create", new CreateCommand("/create", restClient),
-                "/edit", new EditCommand("/edit", restClient)
+                "/get", new GetUserCommand("/get", restClient),
+                "/create", new CreateUserCommand("/create", restClient),
+                "/edit", new EditUserCommand("/edit", restClient),
+                "/hero", new CreateAdventurerCommand("/hero", restClient),
+                "/show", new GetAdventurerCommand("/show", restClient)
         );
     }
 }

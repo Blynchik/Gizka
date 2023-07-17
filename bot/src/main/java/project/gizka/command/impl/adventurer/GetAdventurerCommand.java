@@ -1,4 +1,4 @@
-package project.gizka.command.impl;
+package project.gizka.command.impl.adventurer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,38 +10,34 @@ import project.gizka.service.RestClient;
 
 @Getter
 @Setter
-public class CreateCommand extends AbstractCommand {
-
+public class GetAdventurerCommand extends AbstractCommand {
     private final String command;
     private final RestClient restClient;
     private final int numOfArgs = 1;
-    private String slogan;
+    private String adventurerId;
 
-
-    public CreateCommand(String command, RestClient restClient) {
-        super.setNumOfArgs(1);
+    public GetAdventurerCommand(String command, RestClient restClient){
+        super.setNumOfArgs(numOfArgs);
         this.command = command;
         this.restClient = restClient;
     }
 
-
     @Override
-    public SendMessage handle(Update update) {
+    public SendMessage handle(Update update) throws Exception {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
         String text = "";
 
-        if (this.getState() == numOfArgs + 1) {
-            slogan = message.getText();
-            text = restClient.createUser(chatId, slogan);
-        } else if (this.getState() == 1) {
-            text = askSlogan();
+        if(this.getState() == numOfArgs+1){
+            adventurerId = message.getText();
+            text = restClient.getAdventurerById(adventurerId);
+        } else if (this.getState() == 1){
+            text = askId();
         }
-
         return new SendMessage(chatId, text);
     }
 
-    private String askSlogan() {
-        return "Введите девиз";
+    private String askId(){
+        return "Введите id героя";
     }
 }

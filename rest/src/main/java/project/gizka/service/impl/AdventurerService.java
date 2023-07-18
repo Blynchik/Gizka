@@ -28,6 +28,7 @@ public class AdventurerService implements CRUDService<Adventurer>{
 
     @Override
     public Optional<Adventurer> getById(Long id) {
+        var optionalAdventurer = adventurerRepo.findById(id);
         return adventurerRepo.findById(id);
     }
 

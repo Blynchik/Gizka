@@ -1,5 +1,6 @@
 package project.gizka.model;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;

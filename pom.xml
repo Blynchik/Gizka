@@ -7,7 +7,8 @@
         <module>rest</module>
         <module>entity</module>
 		<module>bot</module>
-	</modules>
+        <module>gameLogic</module>
+    </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>

@@ -1,6 +1,6 @@
 package project.gizka.dto.commonDto;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +21,10 @@ public class AdventurerCommonDto {
     private int strength;
     private int dexterity;
     private int constitution;
+
+    @Transient
+    private int lowAttack;
+
+    @Transient
+    private int highAttack;
 }

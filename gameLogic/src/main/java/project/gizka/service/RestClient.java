@@ -22,7 +22,7 @@ public class RestClient {
         this.restTemplate = restTemplate;
     }
 
-    public Object getAdventurerById(Long adventurerId) throws Exception {
+    public Object getAdventurerById(String adventurerId) throws Exception {
         ResponseEntity<?> response = null;
         try {
             response = restTemplate.getForEntity(baseUrl + "/adventurer/" + adventurerId, AdventurerCommonDto.class);

@@ -20,7 +20,7 @@ public class AdventurerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getGameAdventurer(@PathVariable Long id) throws Exception {
+    public ResponseEntity<?> getGameAdventurer(@PathVariable String id) throws Exception {
         return ResponseEntity.ok(restClient.getAdventurerById(id));
     }
 }

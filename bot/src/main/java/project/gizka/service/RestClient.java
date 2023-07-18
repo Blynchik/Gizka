@@ -19,6 +19,9 @@ public class RestClient {
     @Value("${rest.api.base.url}")
     public String baseUrl;
 
+    @Value("${game.api.logic.url}")
+    public String gameLogicUrl;
+
     @Autowired
     public RestClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -94,7 +97,7 @@ public class RestClient {
     }
 
     public String getAdventurerById(String adventurerId) {
-        var response = restTemplate.getForEntity(baseUrl + "/adventurer/" + adventurerId, Object.class);
+        var response = restTemplate.getForEntity(gameLogicUrl + "/adventurer/" + adventurerId, Object.class);
         String responseText;
 
         if (response.getStatusCode() == HttpStatus.OK) {

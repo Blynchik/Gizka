@@ -4,10 +4,13 @@ import lombok.experimental.UtilityClass;
 import org.modelmapper.ModelMapper;
 import project.gizka.dto.commonDto.AdventurerCommonDto;
 import project.gizka.dto.commonDto.AppUserCommonDto;
+import project.gizka.dto.commonDto.EnemyCommonDto;
 import project.gizka.dto.creatDto.CreatAdventurerDto;
 import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.dto.creatDto.CreateEnemyDto;
 import project.gizka.model.Adventurer;
 import project.gizka.model.AppUser;
+import project.gizka.model.Enemy;
 
 @UtilityClass
 public class Converter {
@@ -22,6 +25,10 @@ public class Converter {
         return modelMapper.map(adventurerDto, Adventurer.class);
     }
 
+    public static Enemy getEnemyFrom(CreateEnemyDto enemyDto) {
+        return modelMapper.map(enemyDto, Enemy.class);
+    }
+
     public static AppUserCommonDto getUserDtoFrom(AppUser appUser) {
         AppUserCommonDto userDto = modelMapper.map(appUser, AppUserCommonDto.class);
         return userDto;
@@ -30,5 +37,10 @@ public class Converter {
     public static AdventurerCommonDto getAdventurerDtoFrom(Adventurer adventurer){
         AdventurerCommonDto adventurerDto = modelMapper.map(adventurer, AdventurerCommonDto.class);
         return adventurerDto;
+    }
+
+    public static EnemyCommonDto getEnemyDtoFrom(Enemy enemy) {
+        EnemyCommonDto enemyDto = modelMapper.map(enemy, EnemyCommonDto.class);
+        return enemyDto;
     }
 }

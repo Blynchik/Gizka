@@ -1,3 +1,20 @@
-INSERT INTO app_user(chat, line) VALUES ('telegram chat id', 'new line'),
-                                  ('another chat id', '');
-INSERT INTO adventurer(first_name, last_name, user_id, strength, dexterity, constitution) VALUES ('Герой', 'Героич', 1, 5, 5, 5);
+INSERT INTO app_user(chat, line)
+VALUES ('telegram chat id', 'new line'),
+       ('another chat id', '');
+INSERT INTO adventurer(first_name, last_name, user_id, strength, dexterity, constitution)
+VALUES ('Герой', 'Героич', 1, 5, 5, 5);
+
+INSERT INTO enemy(name, description, strength, dexterity, constitution)
+VALUES ('Змей Горыныч',
+        'Горыныч — огненный дракон, который извергает пламя, когда нападает. ' ||
+        'Иногда Горыныча связывают и со стихией воды. Тот предстает спящим на ' ||
+        'камне в море или живущим в воде, выходит из вод навстречу герою. Змей ' ||
+        'Горыныч часто составляет в сказках пару с Кощеем Бессмертным, еще одним ' ||
+        'отрицательным фольклорным персонажем.',
+        5, 5, 5),
+       ('Кощей Бессмертный',
+        'Обычно его описывают как тощего героя, старого, седого, слепого, с длинной ' ||
+        'бородой. В сказке сказано, что этого «старика» возможно одолеть только настоящему' ||
+        ' герою, коим и является Иван-Царевич. Его роль в сюжете – это зеркальное отражение ' ||
+        'положительно героя Ивана-Царевича: храброго и доброго.',
+        5, 5, 5);

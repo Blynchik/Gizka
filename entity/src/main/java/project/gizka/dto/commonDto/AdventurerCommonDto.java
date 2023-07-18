@@ -27,4 +27,13 @@ public class AdventurerCommonDto {
 
     @Transient
     private int highAttack;
+
+    @Transient
+    private int lowEvasion;
+
+    @Transient
+    private int highEvasion;
+
+    @Transient
+    private int healthPoint;
 }

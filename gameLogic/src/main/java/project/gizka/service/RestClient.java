@@ -26,9 +26,9 @@ public class RestClient {
         ResponseEntity<?> response = null;
         try {
             response = restTemplate.getForEntity(baseUrl + "/adventurer/" + adventurerId, AdventurerCommonDto.class);
-        } catch (HttpClientErrorException.NotFound e){
+        } catch (HttpClientErrorException.NotFound e) {
             return e.getMessage();
-        } catch (HttpClientErrorException.BadRequest e){
+        } catch (HttpClientErrorException.BadRequest e) {
             return e.getMessage();
         }
 
@@ -36,11 +36,22 @@ public class RestClient {
         if (response.getStatusCode() == HttpStatus.OK) {
             adventurerDto = (AdventurerCommonDto) response.getBody();
             if (adventurerDto != null) {
+
                 int strength = adventurerDto.getStrength();
                 int lowAttack = (int) (strength - Math.ceil(strength / 2.0));
                 adventurerDto.setLowAttack(lowAttack);
                 int highAttack = (int) (strength + Math.floor(strength / 2.0));
                 adventurerDto.setHighAttack(highAttack);
+
+                int dexterity = adventurerDto.getDexterity();
+                int lowEvasion = (int) (dexterity - Math.ceil(dexterity / 2.0));
+                adventurerDto.setLowEvasion(lowEvasion);
+                int highEvasion = (int) (dexterity + Math.floor(dexterity / 2.0));
+                adventurerDto.setHighEvasion(highEvasion);
+
+                int constitution = adventurerDto.getConstitution();
+                int healthPoint =constitution * 2;
+                adventurerDto.setHealthPoint(healthPoint);
             }
         } else {
             throw new Exception("An error occurred while trying to get hero");

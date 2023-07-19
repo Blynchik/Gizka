@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
-import project.gizka.service.RestClient;
+import project.gizka.client.RestClient;
 
 
 @Getter

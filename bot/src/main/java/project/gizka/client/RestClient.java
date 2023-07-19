@@ -1,4 +1,4 @@
-package project.gizka.service;
+package project.gizka.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +40,7 @@ public class RestClient {
         return responseText;
     }
 
-    public String createUser(String chatId, String slogan) {
+    public String createUser(String chatId, String slogan) { //сделать, чтобы возвращал ResponseEntity, в переработка в String происходила в другом месте
 
         CreatAppUserDto userDto = new CreatAppUserDto();
         userDto.setChat(chatId);
@@ -78,7 +78,7 @@ public class RestClient {
     public String createAdventurer(String firstName, String lastName){
         CreatAdventurerDto adventurerDto = new CreatAdventurerDto();
 
-        adventurerDto.setFirstName(firstName);
+        adventurerDto.setName(firstName);
         adventurerDto.setLastName(lastName);
         adventurerDto.setStrength(1);
         adventurerDto.setDexterity(1);

@@ -12,28 +12,9 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdventurerCommonDto {
+public class AdventurerCommonDto extends FighterDto{
     private Long id;
     private Long appUserId;
-    private String firstName;
     private String lastName;
     private LocalDateTime createdAt;
-    private int strength;
-    private int dexterity;
-    private int constitution;
-
-    @Transient
-    private int lowAttack;
-
-    @Transient
-    private int highAttack;
-
-    @Transient
-    private int lowEvasion;
-
-    @Transient
-    private int highEvasion;
-
-    @Transient
-    private int healthPoint;
 }

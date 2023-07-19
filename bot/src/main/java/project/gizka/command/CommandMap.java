@@ -8,7 +8,7 @@ import project.gizka.command.impl.user.CreateUserCommand;
 import project.gizka.command.impl.user.EditUserCommand;
 import project.gizka.command.impl.user.GetUserCommand;
 import project.gizka.command.impl.HelpCommand;
-import project.gizka.service.RestClient;
+import project.gizka.client.RestClient;
 
 import java.util.List;
 import java.util.Map;

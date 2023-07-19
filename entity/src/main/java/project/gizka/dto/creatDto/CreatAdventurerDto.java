@@ -13,7 +13,7 @@ public class CreatAdventurerDto {
     @NotNull(message = "Name should not be empty")
     @NotEmpty(message = "Name should not be empty")
     @Size(min = 1, max = 20, message = "Name should be less 20 than symbols")
-    private String firstName;
+    private String name;
 
     @NotBlank(message = "Surname should not be empty")
     @NotNull(message = "Surname should not be empty")

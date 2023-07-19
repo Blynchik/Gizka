@@ -3,7 +3,6 @@ package project.gizka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import project.gizka.service.RestClient;
 
 @SpringBootApplication
 public class LogicApp

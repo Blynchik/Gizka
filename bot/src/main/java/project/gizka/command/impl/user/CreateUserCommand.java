@@ -22,7 +22,7 @@ public class CreateUserCommand extends AbstractCommand {
 
 
     public CreateUserCommand(String command, RestClient restClient) {
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -35,13 +35,15 @@ public class CreateUserCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if (this.getState() == numOfArgs + 1) {
+        if (this.getReadiness() == numOfArgs) {
             slogan = message.getText();
             text = restClient.createUser(chatId, slogan);
             messages.add(new SendMessage(chatId,text));
-        } else if (this.getState() == 1) {
+            improveReadiness();
+        } else if (this.getReadiness() == 0) {
             text = askSlogan();
             messages.add(new SendMessage(chatId,text));
+            improveReadiness();
         }
 
         return messages;

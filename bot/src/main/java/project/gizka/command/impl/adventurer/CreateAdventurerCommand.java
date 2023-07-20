@@ -22,7 +22,7 @@ public class CreateAdventurerCommand extends AbstractCommand {
     private String lastName;
 
     public CreateAdventurerCommand(String command, RestClient restClient) {
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -34,17 +34,20 @@ public class CreateAdventurerCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if (this.getState() == numOfArgs + 1) {
+        if (this.getReadiness() == numOfArgs) {
             lastName = message.getText();
             text = restClient.createAdventurer(firstName, lastName);
             messages.add(new SendMessage(chatId,text));
-        } else if (this.getState() == 2) {
+            improveReadiness();
+        } else if (this.getReadiness() == 1) {
             firstName = message.getText();
             text = askSurname();
             messages.add(new SendMessage(chatId, text));
-        } else if (this.getState() == 1) {
+            improveReadiness();
+        } else if (this.getReadiness() == 0) {
             text = askName();
             messages.add(new SendMessage(chatId, text));
+            improveReadiness();
         }
         return messages;
     }

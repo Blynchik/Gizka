@@ -11,21 +11,24 @@ import java.util.Queue;
 @Setter
 public abstract class AbstractCommand {
 
-    private int numOfArgs;
-    private int state;
-    private boolean readyForProcess;
+    private int numOfResponses;
+    private int readiness;
+    private boolean done;
 
     public AbstractCommand() {
-        this.state = 0;
-        this.readyForProcess = false;
+        this.readiness = 0;
+        this.done = false;
     }
     public abstract Queue<SendMessage> handle(Update update) throws Exception;
 
-    public boolean checkReadyForProcess() {
-        if (this.getState() > this.getNumOfArgs()) {
-            this.setReadyForProcess(true);
+    public boolean isDone() {
+        if (this.getReadiness() == this.getNumOfResponses()) {
+            this.setDone(true);
         }
-        this.setState(this.getState()+1);
-        return this.isReadyForProcess();
+        return this.done;
+    }
+
+    protected void improveReadiness(){
+        this.setReadiness(this.getReadiness()+1);
     }
 }

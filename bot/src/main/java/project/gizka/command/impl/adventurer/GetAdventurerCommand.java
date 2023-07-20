@@ -20,7 +20,7 @@ public class GetAdventurerCommand extends AbstractCommand {
     private String adventurerId;
 
     public GetAdventurerCommand(String command, RestClient restClient){
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -32,13 +32,15 @@ public class GetAdventurerCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if(this.getState() == numOfArgs+1){
+        if(this.getReadiness() == numOfArgs){
             adventurerId = message.getText();
             text = restClient.getAdventurerById(adventurerId);
             messages.add(new SendMessage(chatId,text));
-        } else if (this.getState() == 1){
+            improveReadiness();
+        } else if (this.getReadiness() == 0){
             text = askId();
             messages.add(new SendMessage(chatId,text));
+            improveReadiness();
         }
         return messages;
     }

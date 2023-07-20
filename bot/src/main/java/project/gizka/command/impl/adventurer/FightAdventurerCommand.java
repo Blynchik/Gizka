@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.client.RestClient;
 import project.gizka.command.AbstractCommand;
 import project.gizka.util.FightLog;
-import project.gizka.util.FightTurn;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -23,7 +22,7 @@ public class FightAdventurerCommand extends AbstractCommand {
     private String adventurerId;
 
     public FightAdventurerCommand(String command, RestClient restClient) {
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -36,7 +35,7 @@ public class FightAdventurerCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if (this.getState() == numOfArgs + 1) {
+        if (this.getReadiness() == numOfArgs) {
             adventurerId = message.getText();
             FightLog fightLog = restClient.getFightLog(adventurerId);
 
@@ -52,10 +51,11 @@ public class FightAdventurerCommand extends AbstractCommand {
 
             text = "\nПобедитель " + fightLog.getWinner();
             messages.add(new SendMessage(chatId, text));
-
-        } else if (this.getState() == 1) {
+            improveReadiness();
+        } else if (this.getReadiness() == 0) {
             text = askId();
             messages.add(new SendMessage(chatId,text));
+            improveReadiness();
         }
 
         return messages;

@@ -16,10 +16,10 @@ import java.util.Queue;
 public class HelpCommand extends AbstractCommand {
 
     private final List<String> commands;
-    private final int numOfArgs = 0;
+    private final int requiredArgs = 0;
 
     public HelpCommand(List<String> commands) {
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(requiredArgs + 1);
         this.commands = commands;
     }
 
@@ -29,7 +29,8 @@ public class HelpCommand extends AbstractCommand {
         String chatId = message.getChatId().toString();
         Queue<SendMessage> messages = new LinkedList<>();
         String text = this.getCommandList();
-        messages.add(new SendMessage(chatId,text));
+        messages.add(new SendMessage(chatId, text));
+        improveReadiness();
         return messages;
     }
 

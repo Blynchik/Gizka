@@ -21,7 +21,7 @@ public class GetUserCommand extends AbstractCommand {
     private String userId;
 
     public GetUserCommand(String command, RestClient restClient) {
-        super.setNumOfArgs(numOfArgs);
+        super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
     }
@@ -33,13 +33,15 @@ public class GetUserCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if (this.getState() == numOfArgs + 1) {
+        if (this.getReadiness() == numOfArgs) {
             userId = message.getText();
             text = restClient.getUserById(userId);
             messages.add(new SendMessage(chatId,text));
-        } else if (this.getState() == 1) {
+            improveReadiness();
+        } else if (this.getReadiness() == 0) {
             text = askId();
             messages.add(new SendMessage(chatId,text));
+            improveReadiness();
         }
 
         return messages;

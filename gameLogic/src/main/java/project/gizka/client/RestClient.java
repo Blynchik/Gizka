@@ -51,7 +51,7 @@ public class RestClient {
                 adventurerDto.setHighEvasion(highEvasion);
 
                 int constitution = adventurerDto.getConstitution();
-                int healthPoint =constitution * 2;
+                int healthPoint =constitution;
                 adventurerDto.setHealthPoint(healthPoint);
             }
         } else {
@@ -90,7 +90,7 @@ public class RestClient {
                 enemyDto.setHighEvasion(highEvasion);
 
                 int constitution = enemyDto.getConstitution();
-                int healthPoint = constitution * 2;
+                int healthPoint = constitution;
                 enemyDto.setHealthPoint(healthPoint);
             }
         } else {

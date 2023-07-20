@@ -8,6 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 import project.gizka.client.RestClient;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 
 @Getter
 @Setter
@@ -24,19 +27,22 @@ public class GetUserCommand extends AbstractCommand {
     }
 
     @Override
-    public SendMessage handle(Update update) {
+    public Queue<SendMessage> handle(Update update) {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
+        Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
         if (this.getState() == numOfArgs + 1) {
             userId = message.getText();
             text = restClient.getUserById(userId);
+            messages.add(new SendMessage(chatId,text));
         } else if (this.getState() == 1) {
             text = askId();
+            messages.add(new SendMessage(chatId,text));
         }
 
-        return new SendMessage(chatId, text);
+        return messages;
     }
 
     private String askId() {

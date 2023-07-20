@@ -88,7 +88,7 @@ public class LogicService {
             if(adventurer.getHealthPoint()<=0){
                 fightLog.setWinner(enemy.getName());
             } else {
-                fightLog.setWinner(adventurer.getName());
+                fightLog.setWinner(adventurer.getName() + " " + adventurer.getLastName());
             }
         }
         return fightLog;

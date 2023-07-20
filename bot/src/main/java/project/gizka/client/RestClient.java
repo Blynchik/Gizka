@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import project.gizka.dto.creatDto.CreatAdventurerDto;
 import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.util.FightLog;
 
 import java.util.Objects;
 
@@ -107,5 +108,18 @@ public class RestClient {
         }
 
         return responseText;
+    }
+
+    public FightLog getFightLog(String adventurerId) {
+        var response = restTemplate.getForEntity(gameLogicUrl + "/fight/" + adventurerId, FightLog.class);
+        String responseText;
+
+        if(response.getStatusCode() == HttpStatus.OK){
+            responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
+        } else {
+            responseText = "An error occurred while trying to get fight log";
+        }
+
+        return response.getBody();
     }
 }

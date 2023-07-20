@@ -30,8 +30,8 @@ public class LogicController {
         return ResponseEntity.ok(restClient.getRandomEnemy());
     }
 
-    @GetMapping("/fight")
-    public ResponseEntity<?> getFight(@RequestParam Long adventurerId) throws Exception {
+    @GetMapping("/fight/{adventurerId}")
+    public ResponseEntity<?> getFight(@PathVariable Long adventurerId) throws Exception {
         return ResponseEntity.ok(logicService.fight(adventurerId));
     }
 }

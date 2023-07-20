@@ -7,7 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Getter
 @Setter
@@ -22,11 +24,13 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public SendMessage handle(Update update) {
+    public Queue<SendMessage> handle(Update update) {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
+        Queue<SendMessage> messages = new LinkedList<>();
         String text = this.getCommandList();
-        return new SendMessage(chatId, text);
+        messages.add(new SendMessage(chatId,text));
+        return messages;
     }
 
     private String getCommandList() {

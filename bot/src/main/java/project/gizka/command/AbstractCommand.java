@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Queue;
+
 @Getter
 @Setter
 public abstract class AbstractCommand {
@@ -17,7 +19,7 @@ public abstract class AbstractCommand {
         this.state = 0;
         this.readyForProcess = false;
     }
-    public abstract SendMessage handle(Update update) throws Exception;
+    public abstract Queue<SendMessage> handle(Update update) throws Exception;
 
     public boolean checkReadyForProcess() {
         if (this.getState() > this.getNumOfArgs()) {

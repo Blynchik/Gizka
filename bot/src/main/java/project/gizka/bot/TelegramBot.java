@@ -6,28 +6,23 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import project.gizka.command.AbstractCommand;
 import project.gizka.command.CommandMap;
 import project.gizka.config.TelegramBotConfig;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-
     private final CommandMap commands;
     private final TelegramBotConfig botConfig;
     private final Map<String, AbstractCommand> userCommands;
     private final MessageBuffer messageBuffer;
 
     @Autowired
-    public TelegramBot(TelegramBotConfig botConfig,
-                       CommandMap commands) {
+    public TelegramBot(TelegramBotConfig botConfig, CommandMap commands) {
         this.botConfig = botConfig;
         this.commands = commands;
         this.messageBuffer = new MessageBuffer();
@@ -43,42 +38,42 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (originalMessage.hasText()) {
                 String commandKey = originalMessage.getText();
                 AbstractCommand currentCommand;
-                if (userCommands.containsKey(chatId)) { //есть ли текущие запросы от данного пользователя
-                    currentCommand = userCommands.get(chatId); //достаем из общего хранилища команду этого пользователя
-                    if (currentCommand != null && !currentCommand.isDone()) {//если команда не исполнена полностью
-                        try {
-                            messageBuffer.addMessage(currentCommand.handle(update));//продожаем с текущего места
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            String responseBody = e.getMessage();
-                            messageBuffer.addMessage(new SendMessage(chatId, responseBody));
-                        }
-                        sendResponseMessage();//отправляем сообщение
-                        if (currentCommand.isDone()) {//если команда завершена, то удаляем команду
-                            userCommands.remove(chatId);
-                        }
-                    }
-                } else { //если запросов от данного пользователя нет
-                    if (commands.getCommands().containsKey(commandKey)) { //проверяем является ли текущее сообщение командой
-                        currentCommand = commands.getCommands().get(commandKey);//создаем новую команду
+
+                if (userCommands.containsKey(chatId)) { //если пользователем уже была введена команда
+                    currentCommand = userCommands.get(chatId);
+                    handleCommand(currentCommand, update, chatId);
+
+                } else { //если команда еще не была введена
+
+                    if (commands.getCommands().containsKey(commandKey)) { //если команда валидна
+                        currentCommand = commands.getCommands().get(commandKey);
                         userCommands.put(chatId, currentCommand);
-                        if (currentCommand != null && !currentCommand.isDone()) {
-                            try {
-                                messageBuffer.addMessage(currentCommand.handle(update));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                String responseBody = e.getMessage();
-                                messageBuffer.addMessage(new SendMessage(originalMessage.getChatId().toString(), responseBody));
-                            }
-                            sendResponseMessage();
-                            if (currentCommand.isDone()) { //если команда завершена, то удаляем команду
-                                userCommands.remove(chatId);
-                            }
-                        }
+                        handleCommand(currentCommand,update,chatId);
                     }
                 }
             }
         }
+    }
+
+    private void handleCommand(AbstractCommand currentCommand, Update update, String chatId) {
+        if (currentCommand != null && !currentCommand.isDone()) {
+            try {
+                messageBuffer.addMessage(currentCommand.handle(update));
+            } catch (Exception e) {
+                e.printStackTrace();
+                String responseBody = e.getMessage();
+                messageBuffer.addMessage(new SendMessage(chatId, responseBody));
+            }
+            sendResponseMessage();
+
+            if (currentCommand.isDone()) {
+                removeCompletedCommand(chatId);
+            }
+        }
+    }
+
+    private void removeCompletedCommand(String chatId) {
+        userCommands.remove(chatId);
     }
 
     private void sendResponseMessage() {
@@ -87,7 +82,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             try {
                 execute(message);
             } catch (TelegramApiException e) {
-                //TODO
                 e.printStackTrace();
             }
         }

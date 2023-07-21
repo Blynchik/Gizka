@@ -23,7 +23,7 @@ public class LogicService {
         this.restClient = restClient;
     }
 
-    public FightLog fight(Long adventurerId) throws Exception{
+    public FightLog fight(Long adventurerId) throws Exception {
         Random random = new Random();
         FightLog fightLog = new FightLog();
 
@@ -62,7 +62,7 @@ public class LogicService {
             fightLog.addTurn(fightTurn);
 
             // Проверка на окончание сражения
-            if (adventurer.getHealthPoint() <=0 || enemy.getHealthPoint() <= 0) {
+            if (adventurer.getHealthPoint() <= 0 || enemy.getHealthPoint() <= 0) {
                 break;
             }
 
@@ -84,13 +84,14 @@ public class LogicService {
             // Создание записи о ходе
             fightTurn = new FightTurn(secondAttacker.getName(), firstAttacker.getName(), attack, evasion, damage, healthPoint);
             fightLog.addTurn(fightTurn);
-
-            if(adventurer.getHealthPoint()<=0){
-                fightLog.setWinner(enemy.getName());
-            } else {
-                fightLog.setWinner(adventurer.getName() + " " + adventurer.getLastName());
-            }
         }
+
+        if(adventurer.getHealthPoint()<=0){
+            fightLog.setWinner(enemy.getName());
+        } else {
+            fightLog.setWinner(adventurer.getName() + " " + adventurer.getLastName());
+        }
+
         return fightLog;
     }
 }

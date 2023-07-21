@@ -42,8 +42,12 @@ public class FightAdventurerCommand extends AbstractCommand {
             for (int i = 0; i < fightLog.getTurns().size(); i++) {
                 var fightTurn = fightLog.getTurns().get(i);
                 text = text + "\n"+fightTurn.toString()+"\n";
-                if(i%2>0){
+
+                if(i%2==0){
                     text ="Раунд "+ (i/2+1) + text;
+                }
+
+                if(i == fightLog.getTurns().size()-1 || i%2>0){
                     messages.add(new SendMessage(chatId, text));
                     text = "";
                 }
@@ -54,7 +58,7 @@ public class FightAdventurerCommand extends AbstractCommand {
             improveReadiness();
         } else if (this.getReadiness() == 0) {
             text = askId();
-            messages.add(new SendMessage(chatId,text));
+            messages.add(new SendMessage(chatId, text));
             improveReadiness();
         }
 

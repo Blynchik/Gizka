@@ -7,10 +7,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 @ToString
-public class ResponseBuffer {
+public class ResponsePool {
     private Queue<SendMessage> messageQueue;
 
-    public ResponseBuffer() {
+    public ResponsePool() {
         this.messageQueue = new LinkedList<>();
     }
 

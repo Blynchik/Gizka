@@ -12,21 +12,23 @@ import project.gizka.command.CommandMap;
 import project.gizka.config.TelegramBotConfig;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final CommandMap validCommands;
     private final TelegramBotConfig botConfig;
     private final Map<String, AbstractCommand> notCompletedCommands;
-    private final Map<String, ResponseBuffer> responseBuffers;
+    private final Map<String, ResponsePool> responsePools;
 
     @Autowired
     public TelegramBot(TelegramBotConfig botConfig,
                        CommandMap validCommands) {
         this.botConfig = botConfig;
         this.validCommands = validCommands;
-        this.responseBuffers = new ConcurrentHashMap<>();
+        this.responsePools = new ConcurrentHashMap<>();
         this.notCompletedCommands = new ConcurrentHashMap<>();
     }
 
@@ -46,29 +48,29 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void handleCommand(AbstractCommand currentCommand, Update update, String chatId) {
         if (currentCommand != null && !currentCommand.isDone()) {
-            ResponseBuffer currentResponseBuffer = getCurrentResponseBuffer(chatId);
+            ResponsePool currentResponsePool = getCurrentResponseBuffer(chatId);
 
             try {
-                currentResponseBuffer.addMessage(currentCommand.handle(update));
+                currentResponsePool.addMessage(currentCommand.handle(update));
             } catch (Exception e) {
                 e.printStackTrace();
                 String responseBody = e.getMessage();
-                currentResponseBuffer.addMessage(new SendMessage(chatId, responseBody));
+                currentResponsePool.addMessage(new SendMessage(chatId, responseBody));
             }
-            sendResponseMessage(currentResponseBuffer);
+            sendResponseMessage(currentResponsePool);
 
             if (currentCommand.isDone()) {
                 removeCompletedCommand(chatId);
-                if (!currentResponseBuffer.hasMessages()) {
+                if (!currentResponsePool.hasMessages()) {
                     removeMessageBuffer(chatId);
                 }
             }
         }
     }
 
-    private void sendResponseMessage(ResponseBuffer responseBuffer) {
-        while (responseBuffer.hasMessages()) {
-            SendMessage message = responseBuffer.getMessage();
+    private void sendResponseMessage(ResponsePool responsePool) {
+        while (responsePool.hasMessages()) {
+            SendMessage message = responsePool.getMessage();
             try {
                 execute(message);
             } catch (TelegramApiException e) {
@@ -77,15 +79,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private ResponseBuffer getCurrentResponseBuffer(String chatId) {
-        ResponseBuffer responseBuffer;
-        if (responseBuffers.containsKey(chatId)) {
-            responseBuffer = responseBuffers.get(chatId);
+    private ResponsePool getCurrentResponseBuffer(String chatId) {
+        ResponsePool responsePool;
+        if (responsePools.containsKey(chatId)) {
+            responsePool = responsePools.get(chatId);
         } else {
-            responseBuffer = new ResponseBuffer();
-            responseBuffers.put(chatId, responseBuffer);
+            responsePool = new ResponsePool();
+            responsePools.put(chatId, responsePool);
         }
-        return responseBuffer;
+        return responsePool;
     }
 
     private AbstractCommand getCurrentCommand(String chatId, String commandKey) {
@@ -109,7 +111,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void removeMessageBuffer(String chatId) {
-        responseBuffers.remove(chatId);
+        responsePools.remove(chatId);
     }
 
     @Override

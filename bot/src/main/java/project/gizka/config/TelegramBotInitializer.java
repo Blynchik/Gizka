@@ -1,4 +1,4 @@
-package project.gizka.bot;
+package project.gizka.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import project.gizka.bot.TelegramBot;
 
 @Component
 public class TelegramBotInitializer {

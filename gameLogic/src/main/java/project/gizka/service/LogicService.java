@@ -91,7 +91,6 @@ public class LogicService {
         } else {
             fightLog.setWinner(adventurer.getName() + " " + adventurer.getLastName());
         }
-
         return fightLog;
     }
 }

@@ -23,10 +23,13 @@ public class MessageSender implements Runnable {
     public void run() {
         try {
             while (true) {
-                Queue<SendMessage> responseQueue = telegramBot.getCommonResponsePool();
-                while (!responseQueue.isEmpty()) {
-                    SendMessage message = responseQueue.poll();
-                    send(message);
+                telegramBot.getCommonResponsePool().addPrivatePoolToCommonPool();
+                Queue<SendMessage> responseQueue = telegramBot.getCommonResponsePool().getCommonPool();
+                synchronized(responseQueue) {
+                    while (!responseQueue.isEmpty()) {
+                        SendMessage message = responseQueue.poll();
+                        send(message);
+                    }
                 }
                 try {
                     Thread.sleep(SLEEP_TIME);
@@ -34,7 +37,7 @@ public class MessageSender implements Runnable {
                     e.printStackTrace();
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

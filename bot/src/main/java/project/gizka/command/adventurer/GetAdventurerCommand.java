@@ -1,4 +1,4 @@
-package project.gizka.command.impl.adventurer;
+package project.gizka.command.adventurer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class GetAdventurerCommand extends AbstractCommand {
     }
 
     @Override
-    public Queue<SendMessage> handle(Update update) throws Exception {
+    public Queue<SendMessage> getMessages(Update update) throws Exception {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
         Queue<SendMessage> messages = new LinkedList<>();

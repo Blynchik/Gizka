@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<?> handleException(ValidationException e){
-        ExceptionResponse response = new ExceptionResponse(e.getErrorMessages(), LocalDateTime.now());
+        ExceptionResponse response = new ExceptionResponse(Collections.singletonList(e.getMessage()), LocalDateTime.now());
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 }

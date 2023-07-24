@@ -2,16 +2,12 @@ package project.gizka.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import project.gizka.bot.ResponsePool;
 import project.gizka.bot.TelegramBot;
 import project.gizka.command.AbstractCommand;
 
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class MessageReceiver implements Runnable {
@@ -68,10 +64,7 @@ public class MessageReceiver implements Runnable {
     private void handleCommand(AbstractCommand currentCommand, Update update, String chatId) {
         if (currentCommand != null && !currentCommand.isDone()) {
             try {
-//                Queue<SendMessage> messages =
-                        currentCommand.handle(update);
-//                telegramBot.getCommonResponsePool().addAll(messages);
-//                putResponseToPrivatePool(messages, chatId);
+                currentCommand.handle(update);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -82,25 +75,7 @@ public class MessageReceiver implements Runnable {
         }
     }
 
-    private void putResponseToPrivatePool(Queue<SendMessage> messages, String chatId){
-        Queue<SendMessage> currentResponsePool = getCurrentResponsePool(chatId);
-        currentResponsePool.addAll(messages);
-    }
-
     private void removeCompletedCommand(String chatId) {
         telegramBot.getNotCompletedCommands().remove(chatId);
-    }
-
-    private Queue<SendMessage> getCurrentResponsePool(String chatId) {
-        Map<String, Queue<SendMessage>> responsePools = telegramBot.getPrivateResponsePools();
-        Queue<SendMessage> currentResponsePool;
-
-        if (responsePools.containsKey(chatId)) {
-            currentResponsePool = responsePools.get(chatId);
-        } else {
-            currentResponsePool = new ConcurrentLinkedQueue<>();
-            responsePools.put(chatId, currentResponsePool);
-        }
-        return currentResponsePool;
     }
 }

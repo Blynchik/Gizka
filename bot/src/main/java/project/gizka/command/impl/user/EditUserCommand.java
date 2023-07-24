@@ -29,7 +29,7 @@ public class EditUserCommand extends AbstractCommand {
 
 
     @Override
-    public Queue<SendMessage> handle(Update update) {
+    public Queue<SendMessage> getMessages(Update update) {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
         Queue<SendMessage> messages = new LinkedList<>();

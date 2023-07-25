@@ -28,19 +28,4 @@ public class CommonResponsePool {
         }
         return instance;
     }
-
-    public void addPrivatePoolToCommonPool() {
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        for(String key : privateResponsePools.getPrivateResponsePools().keySet()){
-            Queue<SendMessage> messages = privateResponsePools.getPrivateResponsePools().get(key);
-            privateResponsePools.getPrivateResponsePools().remove(key);
-
-            executor.submit(() -> {
-                synchronized (commonPool) {
-                    commonPool.addAll(messages);
-                }
-            });
-        }
-        executor.shutdown();
-    }
 }

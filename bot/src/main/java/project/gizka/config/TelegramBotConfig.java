@@ -15,10 +15,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBotConfig {
 
     @Value("${telegram-bot.name}")
-    private final String botUsername;
+    private String botUsername;
 
     @Value("${telegram-bot.token}")
-    private final String botToken;
+    private String botToken;
 
     @Bean
     TelegramBotsApi telegramBotsApi() throws TelegramApiException {

@@ -20,7 +20,7 @@ public class CommonResponsePool {
     private ScheduledExecutorService executorService;
 
     private CommonResponsePool() {
-        commonPool = new ConcurrentLinkedQueue<>();
+        this.commonPool = new ConcurrentLinkedQueue<>();
         this.privateResponsePools = PrivateResponsePools.getInstance();
         executorService = Executors.newScheduledThreadPool(THREADS);
     }

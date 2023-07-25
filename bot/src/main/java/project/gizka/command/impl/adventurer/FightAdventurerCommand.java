@@ -1,4 +1,4 @@
-package project.gizka.command.adventurer;
+package project.gizka.command.impl.adventurer;
 
 import lombok.Getter;
 import lombok.Setter;

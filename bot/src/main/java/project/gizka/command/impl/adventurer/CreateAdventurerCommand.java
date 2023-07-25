@@ -1,4 +1,4 @@
-package project.gizka.command.adventurer;
+package project.gizka.command.impl.adventurer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +13,15 @@ import java.util.Queue;
 
 @Getter
 @Setter
-public class GetAdventurerCommand extends AbstractCommand {
+public class CreateAdventurerCommand extends AbstractCommand {
+
     private final String command;
     private final RestClient restClient;
-    private final int numOfArgs = 1;
-    private String adventurerId;
+    private final int numOfArgs = 2;
+    private String firstName;
+    private String lastName;
 
-    public GetAdventurerCommand(String command, RestClient restClient){
+    public CreateAdventurerCommand(String command, RestClient restClient) {
         super.setNumOfResponses(numOfArgs + 1);
         this.command = command;
         this.restClient = restClient;
@@ -32,20 +34,29 @@ public class GetAdventurerCommand extends AbstractCommand {
         Queue<SendMessage> messages = new LinkedList<>();
         String text = "";
 
-        if(this.getReadiness() == numOfArgs){
-            adventurerId = message.getText();
-            text = restClient.getAdventurerById(adventurerId);
+        if (this.getReadiness() == numOfArgs) {
+            lastName = message.getText();
+            text = restClient.createAdventurer(firstName, lastName);
             messages.add(new SendMessage(chatId,text));
             improveReadiness();
-        } else if (this.getReadiness() == 0){
-            text = askId();
-            messages.add(new SendMessage(chatId,text));
+        } else if (this.getReadiness() == 1) {
+            firstName = message.getText();
+            text = askSurname();
+            messages.add(new SendMessage(chatId, text));
+            improveReadiness();
+        } else if (this.getReadiness() == 0) {
+            text = askName();
+            messages.add(new SendMessage(chatId, text));
             improveReadiness();
         }
         return messages;
     }
 
-    private String askId(){
-        return "Введите id героя";
+    private String askName() {
+        return "Введите имя героя";
+    }
+
+    private String askSurname() {
+        return "Введите фамилию героя";
     }
 }

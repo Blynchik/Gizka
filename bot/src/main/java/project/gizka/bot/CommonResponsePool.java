@@ -17,7 +17,7 @@ public class CommonResponsePool {
     private static CommonResponsePool instance;
     private final int THREADS = 2;
     private final String WAIT_MESSAGE = "Ожидание...";
-    private ScheduledExecutorService executorService;
+    private final ScheduledExecutorService executorService;
 
     private CommonResponsePool() {
         this.commonPool = new ConcurrentLinkedQueue<>();
@@ -51,11 +51,10 @@ public class CommonResponsePool {
                     delay += 10;
                 } else {
                     synchronized (commonPool) {
-                        commonPool.addAll(messages);
+                        commonPool.add(messages.poll());
                     }
                 }
             }
-
             privateResponsePools.getPrivateResponsePools().remove(key);
         }
     }

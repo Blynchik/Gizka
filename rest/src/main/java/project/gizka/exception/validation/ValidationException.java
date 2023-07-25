@@ -8,8 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ValidationException extends RuntimeException {
-    private List<String> errorMessages;
     public ValidationException(List<String> errorMessages){
-        this.errorMessages = errorMessages;
+        super(errorMessages.toString());
     }
 }

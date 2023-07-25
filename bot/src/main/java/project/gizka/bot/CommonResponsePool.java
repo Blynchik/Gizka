@@ -3,8 +3,6 @@ package project.gizka.bot;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -16,6 +14,7 @@ public class CommonResponsePool {
     private final Queue<SendMessage> commonPool;
     private final PrivateResponsePools privateResponsePools;
     private static CommonResponsePool instance;
+    private static final int THREADS = 2;
 
     private CommonResponsePool(){
         commonPool = new ConcurrentLinkedQueue<>();
@@ -27,5 +26,20 @@ public class CommonResponsePool {
             instance = new CommonResponsePool();
         }
         return instance;
+    }
+
+    public void addPrivatePoolToCommonPool() {
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+        for(String key : privateResponsePools.getPrivateResponsePools().keySet()){
+            Queue<SendMessage> messages = privateResponsePools.getPrivateResponsePools().get(key);
+            privateResponsePools.getPrivateResponsePools().remove(key);
+
+            executor.submit(() -> {
+                synchronized (commonPool) {
+                    commonPool.addAll(messages);
+                }
+            });
+        }
+        executor.shutdown();
     }
 }

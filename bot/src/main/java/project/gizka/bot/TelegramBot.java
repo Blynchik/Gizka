@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.command.AbstractCommand;
 import project.gizka.command.CommandMap;
@@ -21,7 +20,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CommandMap validCommands;
     private final TelegramBotConfig botConfig;
     private final Map<String, AbstractCommand> notCompletedCommands;
-//    private final PrivateResponsePools privateResponsePools;
     private final CommonResponsePool commonResponsePool;
     private final Queue<Update> updatePool;
 
@@ -30,7 +28,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                        CommandMap validCommands) {
         this.botConfig = botConfig;
         this.validCommands = validCommands;
-//        this.privateResponsePools = PrivateResponsePools.getInstance();
         this.commonResponsePool = CommonResponsePool.getInstance();
         this.notCompletedCommands = new ConcurrentHashMap<>();
         this.updatePool = new ConcurrentLinkedQueue<>();

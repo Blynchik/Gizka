@@ -15,7 +15,8 @@ public class CommonResponsePool {
     private final Queue<SendMessage> commonPool;
     private final PrivateResponsePools privateResponsePools;
     private static CommonResponsePool instance;
-    private static final int THREADS = 2;
+    private final int THREADS = 2;
+    private final String WAIT_MESSAGE = "Ожидание...";
     private ScheduledExecutorService executorService;
 
     private CommonResponsePool() {
@@ -36,14 +37,18 @@ public class CommonResponsePool {
             Queue<SendMessage> messages = privateResponsePools.getPrivateResponsePools().get(key);
             int delay = 0;
 
-            for (SendMessage message : messages) {
+            for (SendMessage ignored : messages) {
                 if (messages.size() > 1) {
                     executorService.schedule(() -> {
                         synchronized (commonPool) {
-                            commonPool.add(message);
+                            commonPool.add(messages.poll());
+                            if (!messages.isEmpty()) {
+                                SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
+                                commonPool.add(waitMessage);
+                            }
                         }
                     }, delay, TimeUnit.SECONDS);
-                    delay += 3;
+                    delay += 10;
                 } else {
                     synchronized (commonPool) {
                         commonPool.addAll(messages);

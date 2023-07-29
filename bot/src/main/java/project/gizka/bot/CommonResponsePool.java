@@ -14,22 +14,14 @@ import java.util.concurrent.TimeUnit;
 public class CommonResponsePool {
     private final Queue<SendMessage> commonPool;
     private final PrivateResponsePools privateResponsePools;
-    private static CommonResponsePool instance;
     private final int THREADS = 2;
     private final String WAIT_MESSAGE = "Ожидание...";
     private final ScheduledExecutorService executorService;
 
-    private CommonResponsePool() {
+    public CommonResponsePool() {
         this.commonPool = new ConcurrentLinkedQueue<>();
-        this.privateResponsePools = PrivateResponsePools.getInstance();
+        this.privateResponsePools = new PrivateResponsePools();
         executorService = Executors.newScheduledThreadPool(THREADS);
-    }
-
-    public static synchronized CommonResponsePool getInstance() {
-        if (instance == null) {
-            instance = new CommonResponsePool();
-        }
-        return instance;
     }
 
     public void addPrivatePoolToCommonPool() {
@@ -38,22 +30,14 @@ public class CommonResponsePool {
             int delay = 0;
 
             for (SendMessage ignored : messages) {
-                if (messages.size() > 1) {
-                    executorService.schedule(() -> {
-                        synchronized (commonPool) {
-                            commonPool.add(messages.poll());
-                            if (!messages.isEmpty()) {
-                                SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
-                                commonPool.add(waitMessage);
-                            }
-                        }
-                    }, delay, TimeUnit.SECONDS);
-                    delay += 10;
-                } else {
+                executorService.schedule(() -> {
                     synchronized (commonPool) {
                         commonPool.add(messages.poll());
+                        SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
+                        commonPool.add(waitMessage);
                     }
-                }
+                }, delay, TimeUnit.SECONDS);
+                delay += 10;
             }
             privateResponsePools.getPrivateResponsePools().remove(key);
         }

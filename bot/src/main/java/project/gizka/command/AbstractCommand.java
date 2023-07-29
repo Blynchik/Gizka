@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import project.gizka.bot.PrivateResponsePools;
 
 import java.util.Queue;
 
@@ -21,12 +20,6 @@ public abstract class AbstractCommand {
         this.done = false;
     }
 
-    public void handle(Update update) throws Exception {
-        String chatId = update.getMessage().getChatId().toString();
-        Queue<SendMessage> messages = getMessages(update);
-        putResponseToPrivatePool(messages, chatId);
-    }
-
     public boolean isDone() {
         if (this.getReadiness() == this.getNumOfResponses()) {
             this.setDone(true);
@@ -38,9 +31,5 @@ public abstract class AbstractCommand {
         this.setReadiness(this.getReadiness() + 1);
     }
 
-    protected abstract Queue<SendMessage> getMessages(Update update) throws Exception;
-
-    protected void putResponseToPrivatePool(Queue<SendMessage> messages, String chatId) {
-        PrivateResponsePools.getInstance().addResponseToPrivatePool(messages, chatId);
-    }
+    public abstract Queue<SendMessage> getMessages(Update update) throws Exception;
 }

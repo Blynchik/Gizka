@@ -30,7 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                        CommandMap validCommands) {
         this.botConfig = botConfig;
         this.validCommands = validCommands;
-        this.commonResponsePool = CommonResponsePool.getInstance();
+        this.commonResponsePool = new CommonResponsePool();
         this.notCompletedCommands = new ConcurrentHashMap<>();
         this.updatePool = new ConcurrentLinkedQueue<>();
         this.deletePool = new ConcurrentHashMap<>();

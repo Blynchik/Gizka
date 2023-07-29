@@ -11,17 +11,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Getter
 public class PrivateResponsePools {
     private final Map<String, Queue<SendMessage>> privateResponsePools;
-    private static PrivateResponsePools instance;
 
-    private PrivateResponsePools() {
+    public PrivateResponsePools() {
         privateResponsePools = new ConcurrentHashMap<>();
-    }
-
-    public static synchronized PrivateResponsePools getInstance() {
-        if(instance == null) {
-            instance = new PrivateResponsePools();
-        }
-        return instance;
     }
 
     public void addResponseToPrivatePool(Queue<SendMessage> messages, String chatId) {

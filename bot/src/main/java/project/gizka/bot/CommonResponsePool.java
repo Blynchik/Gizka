@@ -30,14 +30,22 @@ public class CommonResponsePool {
             int delay = 0;
 
             for (SendMessage ignored : messages) {
-                executorService.schedule(() -> {
+                if (messages.size() > 1) {
+                    executorService.schedule(() -> {
+                        synchronized (commonPool) {
+                            commonPool.add(messages.poll());
+                            if (!messages.isEmpty()) {
+                                SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
+                                commonPool.add(waitMessage);
+                            }
+                        }
+                    }, delay, TimeUnit.SECONDS);
+                    delay += 10;
+                } else {
                     synchronized (commonPool) {
                         commonPool.add(messages.poll());
-                        SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
-                        commonPool.add(waitMessage);
                     }
-                }, delay, TimeUnit.SECONDS);
-                delay += 10;
+                }
             }
             privateResponsePools.getPrivateResponsePools().remove(key);
         }

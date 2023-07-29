@@ -5,10 +5,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import project.gizka.dto.commonDto.AppUserCommonDto;
 import project.gizka.dto.creatDto.CreatAdventurerDto;
 import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.exception.RestException;
 import project.gizka.util.FightLog;
 
 import java.util.Objects;
@@ -28,17 +33,18 @@ public class RestClient {
         this.restTemplate = restTemplate;
     }
 
-    public String getUserById(String userId) {
-        var response = restTemplate.getForEntity(baseUrl + "/user/" + userId, Object.class);
-        String responseText;
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            responseText = "Found user:\n" + Objects.requireNonNull(response.getBody());
-        } else {
-            responseText = "An error occurred while trying to get user";
+    public AppUserCommonDto getUserById(String userId) {
+        try {
+            ResponseEntity<AppUserCommonDto> response = restTemplate.getForEntity(baseUrl + "/user/" + userId, AppUserCommonDto.class);
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
+            throw new RestException(ex.getResponseBodyAsString());
+        } catch (Exception ex) {
+            throw new RestException(ex.getMessage());
         }
-
-        return responseText;
+        return null;
     }
 
     public String createUser(String chatId, String slogan) { //сделать, чтобы возвращал ResponseEntity, в переработка в String происходила в другом месте
@@ -76,7 +82,7 @@ public class RestClient {
         return responseText;
     }
 
-    public String createAdventurer(String firstName, String lastName){
+    public String createAdventurer(String firstName, String lastName) {
         CreatAdventurerDto adventurerDto = new CreatAdventurerDto();
 
         adventurerDto.setName(firstName);
@@ -114,7 +120,7 @@ public class RestClient {
         var response = restTemplate.getForEntity(gameLogicUrl + "/fight/" + adventurerId, FightLog.class);
         String responseText;
 
-        if(response.getStatusCode() == HttpStatus.OK){
+        if (response.getStatusCode() == HttpStatus.OK) {
             responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
         } else {
             responseText = "An error occurred while trying to get fight log";

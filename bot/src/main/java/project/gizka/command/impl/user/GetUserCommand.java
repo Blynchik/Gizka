@@ -35,7 +35,7 @@ public class GetUserCommand extends AbstractCommand {
 
         if (this.getReadiness() == numOfArgs) {
             userId = message.getText();
-            text = restClient.getUserById(userId);
+            text = restClient.getUserById(userId).toString();
             messages.add(new SendMessage(chatId,text));
             improveReadiness();
         } else if (this.getReadiness() == 0) {

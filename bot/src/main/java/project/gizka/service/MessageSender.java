@@ -30,7 +30,7 @@ public class MessageSender implements Runnable {
             while (true) {
                 telegramBot.getCommonResponsePool().addPrivatePoolToCommonPool();
                 Queue<SendMessage> responseQueue = telegramBot.getCommonResponsePool().getCommonPool();
-                synchronized(responseQueue) {
+                synchronized (responseQueue) {
                     while (!responseQueue.isEmpty()) {
                         SendMessage message = responseQueue.poll();
                         send(message);
@@ -52,22 +52,26 @@ public class MessageSender implements Runnable {
         String text = sendMessage.getText();
         Map<String, Message> deletePool = telegramBot.getDeletePool();
         try {
-            if(deletePool.containsKey(chatId)){
-                Message message = deletePool.get(chatId);
-                DeleteMessage deleteMessage = new DeleteMessage();
-                deleteMessage.setMessageId(message.getMessageId());
-                deleteMessage.setChatId(chatId);
-                telegramBot.execute(deleteMessage);
-                deletePool.remove(chatId);
+            if (deletePool.containsKey(chatId)) {
+                deleteWaitMessage(chatId, deletePool);
             }
 
             Message message = telegramBot.execute(sendMessage);
 
-            if(text.equals(MESSAGE_TO_DELETE)){
-                deletePool.put(chatId,message);
+            if (text.equals(MESSAGE_TO_DELETE)) {
+                deletePool.put(chatId, message);
             }
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteWaitMessage(String chatId, Map<String, Message> deletePool) throws TelegramApiException {
+        Message message = deletePool.get(chatId);
+        DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setMessageId(message.getMessageId());
+        deleteMessage.setChatId(chatId);
+        telegramBot.execute(deleteMessage);
+        deletePool.remove(chatId);
     }
 }

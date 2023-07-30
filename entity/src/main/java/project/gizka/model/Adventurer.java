@@ -8,12 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "adventurer")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@Data
 public class Adventurer {
 
     @Id

@@ -10,12 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "app_user")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AppUser {
 
@@ -25,9 +20,9 @@ public class AppUser {
     private Long id;
 
     @Column(name = "chat", unique = true)
-    @NotBlank(message = "Chat should not be empty")
-    @NotNull(message = "Chat should not be empty")
-    @NotEmpty(message = "Chat should not be empty")
+    @NotBlank(message = "Chat id should not be empty")
+    @NotNull(message = "Chat id should not be empty")
+    @NotEmpty(message = "Chat id should not be empty")
     private String chat;
 
     @Column(name = "line")

@@ -2,11 +2,7 @@ package project.gizka.util;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Data
 public class FightTurn {
     private String attacker;
     private String defender;

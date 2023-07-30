@@ -8,12 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "enemy")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@Data
 public class Enemy {
 
     @Id

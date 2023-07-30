@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.gizka.dto.commonDto.EnemyCommonDto;
-import project.gizka.dto.creatDto.CreateEnemyDto;
+import project.gizka.dto.createDto.CreateEnemyDto;
 import project.gizka.exception.notFound.EnemyNotFoundException;
 import project.gizka.exception.validation.EnemyValidationException;
 import project.gizka.model.Enemy;

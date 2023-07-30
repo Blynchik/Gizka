@@ -1,14 +1,10 @@
-package project.gizka.dto.creatDto;
+package project.gizka.dto.createDto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
-public class CreatAppUserDto {
+@Data
+public class CreateAppUserDto {
 
     @NotBlank(message = "Chat should not be empty")
     @NotNull(message = "Chat should not be empty")

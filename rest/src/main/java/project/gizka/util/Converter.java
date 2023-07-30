@@ -5,11 +5,13 @@ import org.modelmapper.ModelMapper;
 import project.gizka.dto.commonDto.AdventurerCommonDto;
 import project.gizka.dto.commonDto.AppUserCommonDto;
 import project.gizka.dto.commonDto.EnemyCommonDto;
-import project.gizka.dto.creatDto.CreatAdventurerDto;
-import project.gizka.dto.creatDto.CreatAppUserDto;
-import project.gizka.dto.creatDto.CreateEnemyDto;
+import project.gizka.dto.createDto.CreateAdventurerDto;
+import project.gizka.dto.createDto.CreateAppUserDto;
+import project.gizka.dto.createDto.CreateBinaryContentDto;
+import project.gizka.dto.createDto.CreateEnemyDto;
 import project.gizka.model.Adventurer;
 import project.gizka.model.AppUser;
+import project.gizka.model.BinaryContent;
 import project.gizka.model.Enemy;
 
 @UtilityClass
@@ -17,11 +19,11 @@ public class Converter {
 
     private final static ModelMapper modelMapper = new ModelMapper();
 
-    public static AppUser getAppUserFrom(CreatAppUserDto userDto){
+    public static AppUser getAppUserFrom(CreateAppUserDto userDto) {
         return modelMapper.map(userDto, AppUser.class);
     }
 
-    public static Adventurer getAdventurerFrom(CreatAdventurerDto adventurerDto){
+    public static Adventurer getAdventurerFrom(CreateAdventurerDto adventurerDto) {
         return modelMapper.map(adventurerDto, Adventurer.class);
     }
 
@@ -34,7 +36,7 @@ public class Converter {
         return userDto;
     }
 
-    public static AdventurerCommonDto getAdventurerDtoFrom(Adventurer adventurer){
+    public static AdventurerCommonDto getAdventurerDtoFrom(Adventurer adventurer) {
         AdventurerCommonDto adventurerDto = modelMapper.map(adventurer, AdventurerCommonDto.class);
         return adventurerDto;
     }

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.gizka.dto.commonDto.AppUserCommonDto;
-import project.gizka.dto.creatDto.CreatAppUserDto;
+import project.gizka.dto.createDto.CreateAppUserDto;
 import project.gizka.model.AppUser;
 import project.gizka.exception.notFound.AppUserNotFoundException;
 import project.gizka.exception.validation.AppUserValidationException;
@@ -18,7 +18,6 @@ import project.gizka.util.Converter;
 import project.gizka.validator.AppUserValidator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static project.gizka.util.Converter.getAppUserFrom;
 
@@ -73,7 +72,7 @@ public class AppUserController {
             Если чат пустой или не уникальный, возвращается
             сообщение об ошибке с временем ошибки с кодом 400.
             """)
-    public ResponseEntity<AppUserCommonDto> create(@RequestBody @Valid CreatAppUserDto userDto,
+    public ResponseEntity<AppUserCommonDto> create(@RequestBody @Valid CreateAppUserDto userDto,
                                           BindingResult bindingResult) {
         checkForErrors(userDto, bindingResult);
         AppUser appUser = getAppUserFrom(userDto);
@@ -94,7 +93,7 @@ public class AppUserController {
             времени ошибки с кодом 404.
             """)
     public ResponseEntity<AppUserCommonDto> edit(@PathVariable Long id,
-                                        @RequestBody @Valid CreatAppUserDto userDto,
+                                        @RequestBody @Valid CreateAppUserDto userDto,
                                         BindingResult bindingResult) {
         checkUserExistence(id);
 
@@ -129,7 +128,7 @@ public class AppUserController {
         }
     }
 
-    private void checkForErrors(CreatAppUserDto userDto,
+    private void checkForErrors(CreateAppUserDto userDto,
                                 BindingResult bindingResult) {
         appUserValidator.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {

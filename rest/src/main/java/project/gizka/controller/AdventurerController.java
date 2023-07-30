@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.gizka.dto.commonDto.AdventurerCommonDto;
-import project.gizka.dto.creatDto.CreatAdventurerDto;
+import project.gizka.dto.createDto.CreateAdventurerDto;
 import project.gizka.model.Adventurer;
 import project.gizka.exception.notFound.AdventurerNotFoundException;
 import project.gizka.exception.validation.AdventurerValidationException;
@@ -46,7 +46,7 @@ public class AdventurerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AdventurerCommonDto> create(@RequestBody @Valid CreatAdventurerDto adventurerDto,
+    public ResponseEntity<AdventurerCommonDto> create(@RequestBody @Valid CreateAdventurerDto adventurerDto,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
@@ -62,7 +62,7 @@ public class AdventurerController {
 
     @PutMapping("/{id}/edit")
     public ResponseEntity<AdventurerCommonDto> edit(@PathVariable Long id,
-                                           @RequestBody @Valid CreatAdventurerDto adventurerDto,
+                                           @RequestBody @Valid CreateAdventurerDto adventurerDto,
                                            BindingResult bindingResult) {
         checkAdventurerExistence(id);
 

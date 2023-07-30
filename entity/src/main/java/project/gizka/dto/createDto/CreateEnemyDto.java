@@ -1,14 +1,10 @@
-package project.gizka.dto.creatDto;
+package project.gizka.dto.createDto;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class CreateEnemyDto {
 
     @NotBlank(message = "Name should not be empty")

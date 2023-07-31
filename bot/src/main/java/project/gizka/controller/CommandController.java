@@ -2,10 +2,9 @@ package project.gizka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.bot.TelegramBot;
-import project.gizka.command.AbstractCommand;
 
 import java.util.Map;
 import java.util.Queue;
@@ -37,11 +36,11 @@ public class CommandController {
 
     private void handle(Update update, AbstractCommand abstractCommand) throws Exception {
         String chatId = update.getMessage().getChatId().toString();
-        Queue<SendMessage> messages = abstractCommand.getMessages(update);
+        Queue<?> messages = abstractCommand.getMessages(update);
         putResponseToPrivatePool(messages, chatId);
     }
 
-    private void putResponseToPrivatePool(Queue<SendMessage> messages, String chatId) {
+    private void putResponseToPrivatePool(Queue<?> messages, String chatId) {
         telegramBot.getCommonResponsePool().getPrivateResponsePools().addResponseToPrivatePool(messages, chatId);
     }
 

@@ -2,6 +2,7 @@ package project.gizka.bot;
 
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.Map;
 import java.util.Queue;
@@ -10,22 +11,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Getter
 public class PrivateResponsePools {
-    private final Map<String, Queue<SendMessage>> privateResponsePools;
+    private final Map<String, Queue<Object>> privateResponsePools;
 
     public PrivateResponsePools() {
         privateResponsePools = new ConcurrentHashMap<>();
     }
 
-    public void addResponseToPrivatePool(Queue<SendMessage> messages, String chatId) {
-        Queue<SendMessage> currentResponsePool = getCurrentResponsePool(chatId);
+    public void addResponseToPrivatePool(Queue<?> messages, String chatId) {
+        Queue<Object> currentResponsePool = getCurrentResponsePool(chatId);
         currentResponsePool.addAll(messages);
     }
 
-    private Queue<SendMessage> getCurrentResponsePool(String chatId) {
+    private Queue<Object> getCurrentResponsePool(String chatId) {
         if (privateResponsePools.containsKey(chatId)) {
             return privateResponsePools.get(chatId);
         } else {
-            Queue<SendMessage> currentResponsePool = new ConcurrentLinkedQueue<>();
+            Queue<Object> currentResponsePool = new ConcurrentLinkedQueue<>();
             privateResponsePools.put(chatId, currentResponsePool);
             return currentResponsePool;
         }

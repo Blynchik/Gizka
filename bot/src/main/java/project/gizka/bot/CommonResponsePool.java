@@ -2,6 +2,7 @@ package project.gizka.bot;
 
 import lombok.Getter;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 public class CommonResponsePool {
-    private final Queue<SendMessage> commonPool;
+    private final Queue<Object> commonPool;
     private final PrivateResponsePools privateResponsePools;
     private final int THREADS = 2;
     private final String WAIT_MESSAGE = "Ожидание...";
@@ -26,16 +27,18 @@ public class CommonResponsePool {
 
     public void addPrivatePoolToCommonPool() {
         for (String key : privateResponsePools.getPrivateResponsePools().keySet()) {
-            Queue<SendMessage> messages = privateResponsePools.getPrivateResponsePools().get(key);
+            Queue<Object> messages = privateResponsePools.getPrivateResponsePools().get(key);
             int delay = 0;
 
-            for (SendMessage ignored : messages) {
+            for (Object ignored : messages) {
                 if (messages.size() > 1) {
                     executorService.schedule(() -> {
                         synchronized (commonPool) {
                             commonPool.add(messages.poll());
                             if (!messages.isEmpty()) {
-                                SendMessage waitMessage = new SendMessage(key, WAIT_MESSAGE);
+                                SendMessage waitMessage = new SendMessage();
+                                waitMessage.setChatId(key);
+                                waitMessage.setText(WAIT_MESSAGE);
                                 commonPool.add(waitMessage);
                             }
                         }

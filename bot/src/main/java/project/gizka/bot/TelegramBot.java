@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import project.gizka.command.AbstractCommand;
-import project.gizka.command.CommandMap;
+import project.gizka.controller.AbstractCommand;
+import project.gizka.controller.CommandMap;
 import project.gizka.config.TelegramBotConfig;
 
 import java.util.Map;

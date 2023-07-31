@@ -21,7 +21,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CommandMap validCommands;
     private final TelegramBotConfig botConfig;
     private final Map<String, AbstractCommand> notCompletedCommands;
-    private final Map<String, Message> deletePool;
     private final CommonResponsePool commonResponsePool;
     private final Queue<Update> updatePool;
 
@@ -33,7 +32,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.commonResponsePool = new CommonResponsePool();
         this.notCompletedCommands = new ConcurrentHashMap<>();
         this.updatePool = new ConcurrentLinkedQueue<>();
-        this.deletePool = new ConcurrentHashMap<>();
     }
 
     @Override

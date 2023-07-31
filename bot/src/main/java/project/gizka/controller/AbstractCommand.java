@@ -2,8 +2,6 @@ package project.gizka.controller;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.client.RestClient;
 

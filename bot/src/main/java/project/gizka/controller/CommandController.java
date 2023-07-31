@@ -2,7 +2,6 @@ package project.gizka.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.bot.TelegramBot;
 
@@ -15,7 +14,7 @@ public class CommandController {
     private final TelegramBot telegramBot;
 
     @Autowired
-    public CommandController(TelegramBot telegramBot){
+    public CommandController(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
     }
 

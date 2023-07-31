@@ -1,8 +1,6 @@
 package project.gizka.bot;
 
 import lombok.Getter;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.Map;
 import java.util.Queue;

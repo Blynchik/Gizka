@@ -48,35 +48,4 @@ public class MessageReceiver implements Runnable {
             e.printStackTrace();
         }
     }
-
-//    private AbstractCommand getCurrentCommand(String chatId, String commandKey) {
-//        Map<String, AbstractCommand> notCompletedCommands = telegramBot.getNotCompletedCommands();
-//        Map<String, AbstractCommand> validCommands = telegramBot.getValidCommands().getCommands();
-//        AbstractCommand currentCommand = validCommands.get("/help");
-//
-//        if (validCommands.containsKey(commandKey)) {
-//            notCompletedCommands.remove(chatId);
-//            currentCommand = validCommands.get(commandKey);
-//            notCompletedCommands.put(chatId, currentCommand);
-//        } else {
-//            if (!validCommands.containsKey(commandKey) && notCompletedCommands.containsKey(chatId)) {
-//                currentCommand = notCompletedCommands.get(chatId);
-//            }
-//        }
-//        return currentCommand;
-//    }
-
-//    private void handleCommand(AbstractCommand currentCommand, Update update, String chatId) {
-//        if (currentCommand != null && !currentCommand.isDone()) {
-//            try {
-//                commandController.handle(update);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            if (currentCommand.isDone()) {
-//                telegramBot.getNotCompletedCommands().remove(chatId);
-//            }
-//        }
-//    }
 }

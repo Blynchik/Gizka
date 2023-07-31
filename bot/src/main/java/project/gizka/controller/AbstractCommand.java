@@ -12,13 +12,15 @@ import java.util.Queue;
 public abstract class AbstractCommand {
 
     protected final RestClient restClient;
+    private String command;
     private int numOfArgs;
     private int state;
     private boolean done;
 
-    public AbstractCommand(RestClient restClient, int numOfArgs) {
+    public AbstractCommand(RestClient restClient, int numOfArgs, String command) {
         this.restClient = restClient;
         this.numOfArgs = numOfArgs;
+        this.command = command;
         this.state = 0;
         this.done = false;
     }

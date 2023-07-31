@@ -4,9 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import project.gizka.util.Role;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "app_user")
@@ -39,4 +44,15 @@ public class AppUser {
 
     @OneToMany(mappedBy = "appUser", fetch = FetchType.LAZY)
     private List<Adventurer> adventurers;
+
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "role",
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"app_user_id", "role"}, name = "uk_user_role"))
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull
+    private Set<Role> roles = new HashSet<>();
 }

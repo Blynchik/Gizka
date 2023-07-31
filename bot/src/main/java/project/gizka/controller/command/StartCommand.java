@@ -16,13 +16,10 @@ import java.util.Queue;
 @Getter
 @Setter
 public class StartCommand extends AbstractCommand {
-
-    private final String command;
     private final String startMessage;
 
     public StartCommand(RestClient restClient, int numOfArgs){
-        super(restClient, numOfArgs);
-        this.command = "/start";
+        super(restClient, numOfArgs, "/start");
         this.startMessage = "Rererer";
     }
 

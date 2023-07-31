@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -33,8 +34,8 @@ public class StartCommand extends AbstractCommand {
 
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
-        InputFile inputFile = new InputFile();
-        inputFile.setMedia("https://s1.1zoom.ru/big0/697/Love_Night_Moon_Trees_Silhouette_Two_Dating_576752_1280x853.jpg");
+        File imageFile = new File("C:\\Users\\Blynchik\\Desktop\\own\\class\\bot\\src\\main\\resources\\3901.750x0.jpg");
+        InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
         photo.setCaption(startMessage);
         messages.add(photo);

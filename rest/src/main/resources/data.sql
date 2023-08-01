@@ -1,6 +1,6 @@
-INSERT INTO app_user(name, chat, line)
-VALUES ('my name', 'telegram chat id', 'new line'),
-       ('person', 'another chat id', '');
+INSERT INTO app_user(name, chat)
+VALUES ('my name', 'telegram chat id'),
+       ('person', 'another chat id');
 INSERT INTO adventurer(first_name, last_name, user_id, strength, dexterity, constitution)
 VALUES ('Герой', 'Героич', 1, 5, 5, 5);
 

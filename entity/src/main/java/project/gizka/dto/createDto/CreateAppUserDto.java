@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
+@AllArgsConstructor
 public class CreateAppUserDto {
 
     @NotBlank(message = "Name id should not be empty")

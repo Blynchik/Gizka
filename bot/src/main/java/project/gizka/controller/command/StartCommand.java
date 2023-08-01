@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
+import project.gizka.dto.commonDto.AppUserCommonDto;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -27,14 +28,16 @@ public class StartCommand extends AbstractCommand {
     public Queue<SendPhoto> getMessages(Update update) {
         Message message = update.getMessage();
         String chatId = message.getChatId().toString();
+        String userName = message.getFrom().getUserName();
         Queue<SendPhoto> messages = new LinkedList<>();
+        AppUserCommonDto userDto = restClient.createAppUser(userName, chatId);
 
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
         File imageFile = new File("C:\\Users\\Blynchik\\Desktop\\own\\class\\bot\\src\\main\\resources\\3901.750x0.jpg");
         InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
-        photo.setCaption(startMessage);
+        photo.setCaption(userDto.toString());
         messages.add(photo);
         improveReadiness();
         return messages;

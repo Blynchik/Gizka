@@ -24,6 +24,12 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", unique = true)
+    @NotBlank(message = "Chat id should not be empty")
+    @NotNull(message = "Chat id should not be empty")
+    @NotEmpty(message = "Chat id should not be empty")
+    private String name;
+
     @Column(name = "chat", unique = true)
     @NotBlank(message = "Chat id should not be empty")
     @NotNull(message = "Chat id should not be empty")

@@ -46,8 +46,9 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return chat -> {
-            Optional<AppUser> optionalUser = appUserService.getByChat(chat);
+        return name -> {
+            Optional<AppUser> optionalUser = appUserService.getByName(name);
+            System.out.println(name);
             return new AuthUser(optionalUser.orElseThrow(
                     () -> new BadCredentialsException("Incorrect credentials")
             ));
@@ -68,9 +69,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                                 .requestMatchers("/api/registration").permitAll()
-                                .requestMatchers("/api/**").authenticated())
+                                .requestMatchers("/api/**").authenticated()
+                                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name()))
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
                                 .authenticationEntryPoint(customAuthenticationEntryPoint))

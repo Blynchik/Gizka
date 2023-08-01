@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface AppUserRepo extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByChat(String chat);
+
+    Optional<AppUser> findByName(String name);
 }

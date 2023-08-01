@@ -7,7 +7,7 @@ public class AuthUser extends User {
     private final AppUser user;
 
     public AuthUser(@NotNull AppUser user){
-        super(user.getChat(),"{noop}password", user.getRoles());
+        super(user.getName(),"{noop}"+user.getName(), user.getRoles());
         this.user = user;
     }
 

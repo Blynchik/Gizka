@@ -1,6 +1,6 @@
-INSERT INTO app_user(chat, line)
-VALUES ('telegram chat id', 'new line'),
-       ('another chat id', '');
+INSERT INTO app_user(name, chat, line)
+VALUES ('my name', 'telegram chat id', 'new line'),
+       ('person', 'another chat id', '');
 INSERT INTO adventurer(first_name, last_name, user_id, strength, dexterity, constitution)
 VALUES ('Герой', 'Героич', 1, 5, 5, 5);
 
@@ -18,3 +18,7 @@ VALUES ('Змей Горыныч',
         ' герою, коим и является Иван-Царевич. Его роль в сюжете – это зеркальное отражение ' ||
         'положительно героя Ивана-Царевича: храброго и доброго.',
         5, 5, 5);
+
+INSERT INTO role(app_user_id, role)
+VALUES (1, 'ADMIN'),
+       (1, 'USER');

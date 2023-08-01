@@ -62,4 +62,8 @@ public class AppUserService implements CRUDService<AppUser> {
     public Optional<AppUser> getByChat(String chat) {
         return appUserRepo.findByChat(chat);
     }
+
+    public Optional<AppUser> getByName(String name) {
+        return appUserRepo.findByName(name);
+    }
 }

@@ -17,11 +17,12 @@ import java.util.Queue;
 @Getter
 @Setter
 public class StartCommand extends AbstractCommand {
-    private final String startMessage;
+
+    private static final String startMessage = "RERerrr";
+    private static final String IMAGE_PATH = "C:\\Users\\Blynchik\\Desktop\\own\\class\\bot\\src\\main\\resources\\3901.750x0.jpg";
 
     public StartCommand(RestClient restClient, int numOfArgs){
         super(restClient, numOfArgs, "/start");
-        this.startMessage = "Rererer";
     }
 
     @Override
@@ -30,16 +31,26 @@ public class StartCommand extends AbstractCommand {
         String chatId = message.getChatId().toString();
         String userName = message.getFrom().getUserName();
         Queue<SendPhoto> messages = new LinkedList<>();
-        AppUserCommonDto userDto = restClient.createAppUser(userName, chatId);
 
+        AppUserCommonDto userDto = getResponseFromDB(userName, chatId);
+        SendPhoto photo = createPhoto(chatId, userDto);
+        messages.add(photo);
+
+        improveReadiness();
+        return messages;
+    }
+
+    private AppUserCommonDto getResponseFromDB(String userName, String chatId) {
+        return restClient.createAppUser(userName, chatId);
+    }
+
+    private SendPhoto createPhoto(String chatId, AppUserCommonDto userDto) {
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
-        File imageFile = new File("C:\\Users\\Blynchik\\Desktop\\own\\class\\bot\\src\\main\\resources\\3901.750x0.jpg");
+        File imageFile = new File(IMAGE_PATH);
         InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
         photo.setCaption(userDto.toString());
-        messages.add(photo);
-        improveReadiness();
-        return messages;
+        return photo;
     }
 }

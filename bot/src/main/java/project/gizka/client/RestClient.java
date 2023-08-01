@@ -33,22 +33,30 @@ public class RestClient {
         this.restTemplate = restTemplate;
     }
 
-    public AppUserCommonDto createAppUser(String userName, String chatId){
-        CreateAppUserDto userDto = new CreateAppUserDto(userName, chatId);
-        try{
-            var response = restTemplate.postForEntity(baseUrl + "/registration", userDto, AppUserCommonDto.class);
-
+    public AppUserCommonDto createAppUser(String userName, String chatId) {
+        CreateAppUserDto userDto = createCreateAppUserDto(userName, chatId);
+        try {
+            ResponseEntity<AppUserCommonDto> response = postForCreateAppUser(userDto);
             if (response.getStatusCode() == HttpStatus.CREATED) {
                 return response.getBody();
+            } else {
+                throw new RestException("Failed to create user");
             }
-
-        }catch (HttpClientErrorException | HttpServerErrorException ex) {
+        } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new RestException(ex.getResponseBodyAsString());
         } catch (Exception ex) {
             throw new RestException(ex.getMessage());
         }
+    }
 
-        return null;
+
+    private CreateAppUserDto createCreateAppUserDto(String userName, String chatId) {
+        return new CreateAppUserDto(userName, chatId);
+    }
+
+    private ResponseEntity<AppUserCommonDto> postForCreateAppUser(CreateAppUserDto userDto) {
+        String url = baseUrl + "/registration";
+        return restTemplate.postForEntity(url, userDto, AppUserCommonDto.class);
     }
 
 

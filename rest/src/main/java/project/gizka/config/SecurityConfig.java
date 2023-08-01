@@ -70,8 +70,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
                                 .requestMatchers("/api/registration").permitAll()
-                                .requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name()))
+                                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                                .requestMatchers("/api/**").authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
                                 .authenticationEntryPoint(customAuthenticationEntryPoint))

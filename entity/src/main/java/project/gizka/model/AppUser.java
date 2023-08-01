@@ -25,9 +25,9 @@ public class AppUser {
     private Long id;
 
     @Column(name = "name", unique = true)
-    @NotBlank(message = "Chat id should not be empty")
-    @NotNull(message = "Chat id should not be empty")
-    @NotEmpty(message = "Chat id should not be empty")
+    @NotBlank(message = "Name id should not be empty")
+    @NotNull(message = "Name id should not be empty")
+    @NotEmpty(message = "Name id should not be empty")
     private String name;
 
     @Column(name = "chat", unique = true)
@@ -35,10 +35,6 @@ public class AppUser {
     @NotNull(message = "Chat id should not be empty")
     @NotEmpty(message = "Chat id should not be empty")
     private String chat;
-
-    @Column(name = "line")
-    @Size(min = 0, max = 100, message = "Slogan should be less than 100 symbols")
-    private String line;
 
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)

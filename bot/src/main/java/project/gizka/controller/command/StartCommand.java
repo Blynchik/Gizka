@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
-import project.gizka.dto.commonDto.AppUserCommonDto;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -18,8 +17,15 @@ import java.util.Queue;
 @Setter
 public class StartCommand extends AbstractCommand {
 
-    private static final String startMessage = "RERerrr";
-    private static final String IMAGE_PATH = "C:\\Users\\Blynchik\\Desktop\\own\\class\\bot\\src\\main\\resources\\3901.750x0.jpg";
+    private static final String startMessage = "Добро пожаловать в мир фэнтези! \uD83C\uDF1F\uD83E\uDDDA\u200D♂\uFE0F\n" +
+            "Здесь ты станешь главным героем своей собственной истории, полной экшна и приключений. Вступай в схватку со\n" +
+            " свирепыми монстрами, встречайся с опасностями и преодолевай испытания, чтобы завоевать славу и покорить \n" +
+            "этот магический мир.\n" +
+            "Ты будешь прокладывать свой путь через загадочные земли, разыскивая сокровища и сражаясь за свою жизнь. \n" +
+            "Так что готовь свое оружие, вступай в бой и докажи, что ты достоин быть легендарным героем фэнтези! \n" +
+            "✨\uD83D\uDCAA Приготовься к незабываемым приключениям и морю эмоций. Приятной игры! \uD83C\uDFAE\uD83D\uDD25";
+
+    private static final String IMAGE_PATH = "D:\\нужное\\java\\own\\class\\bot\\src\\main\\resources\\logo.jpg";
 
     public StartCommand(RestClient restClient, int numOfArgs){
         super(restClient, numOfArgs, "/start");
@@ -32,25 +38,25 @@ public class StartCommand extends AbstractCommand {
         String userName = message.getFrom().getUserName();
         Queue<SendPhoto> messages = new LinkedList<>();
 
-        AppUserCommonDto userDto = getResponseFromDB(userName, chatId);
-        SendPhoto photo = createPhoto(chatId, userDto);
-        messages.add(photo);
+        getResponseFromRest(userName, chatId);
+        SendPhoto picture = getPicture(chatId);
+        messages.add(picture);
 
         improveReadiness();
         return messages;
     }
 
-    private AppUserCommonDto getResponseFromDB(String userName, String chatId) {
-        return restClient.createAppUser(userName, chatId);
+    private void getResponseFromRest(String userName, String chatId) {
+        restClient.createAppUser(userName, chatId);
     }
 
-    private SendPhoto createPhoto(String chatId, AppUserCommonDto userDto) {
+    private SendPhoto getPicture(String chatId) {
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
         File imageFile = new File(IMAGE_PATH);
         InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
-        photo.setCaption(userDto.toString());
+        photo.setCaption(StartCommand.startMessage);
         return photo;
     }
 }

@@ -50,7 +50,6 @@ public class MessageSender implements Runnable {
 
         try {
             MessageType messageType = MessageType.getMessageType(object);
-            System.out.println(messageType);
             switch (messageType) {
                 case TEXT -> {
                     SendMessage sendMessage = (SendMessage) object;

@@ -16,6 +16,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"error\": \"Access denied. Authorize, please.\"}");
+        response.getWriter().write("{\"error\": \"Access denied. Authorize, please, or wrong credentials.\"}");
     }
 }

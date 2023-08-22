@@ -3,6 +3,8 @@ package project.gizka.util;
 import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FightTurn {
     private String attacker;
     private String defender;

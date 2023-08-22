@@ -33,20 +33,18 @@ public class RestClient {
         this.restTemplate = restTemplate;
     }
 
-    public AppUserCommonDto createAppUser(String userName, String chatId) {
+    public ResponseEntity<?> createAppUser(String userName, String chatId) {
         CreateAppUserDto userDto = createCreateAppUserDto(userName, chatId);
         try {
             ResponseEntity<AppUserCommonDto> response = postForCreateAppUser(userDto);
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                return response.getBody();
-            } else {
-                throw new RestException("Failed to create user");
-            }
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            throw new RestException(ex.getResponseBodyAsString());
-        } catch (Exception ex) {
-            throw new RestException(ex.getMessage());
+            if (ex.getMessage().contains("[Chat already exists]")) {
+                return ResponseEntity.ok().build();
+            } else {
+                throw new RestException(ex.getResponseBodyAsString());
+            }
         }
+        return ResponseEntity.ok().build();
     }
 
 

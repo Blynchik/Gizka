@@ -3,8 +3,7 @@ package project.gizka.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,9 +23,12 @@ public class RestClient {
     }
 
     public Object getAdventurerById(String adventurerId) throws Exception { //сделать, чтобы возвращалось ResponseEntity, а переработка происходила в другом месте
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("my name", "my name");
         ResponseEntity<?> response = null;
         try {
-            response = restTemplate.getForEntity(baseUrl + "/adventurer/" + adventurerId, AdventurerCommonDto.class);
+            HttpEntity<String> request = new HttpEntity<>(headers);
+            response = restTemplate.exchange(baseUrl + "/adventurer/" + adventurerId, HttpMethod.GET, request, AdventurerCommonDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             return e.getMessage();
         } catch (HttpClientErrorException.BadRequest e) {

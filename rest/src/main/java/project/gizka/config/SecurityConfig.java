@@ -47,8 +47,8 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return name -> {
-            Optional<AppUser> optionalUser = appUserService.getByName(name);
+        return chat -> {
+            Optional<AppUser> optionalUser = appUserService.getByChat(chat);
             return new AuthUser(optionalUser.orElseThrow(
                     () -> new AccessDeniedException("Incorrect credentials")
             ));

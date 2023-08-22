@@ -2,10 +2,7 @@ package project.gizka.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -34,9 +31,10 @@ public class RestClient {
     }
 
     public ResponseEntity<?> createAppUser(String userName, String chatId) {
-        CreateAppUserDto userDto = createCreateAppUserDto(userName, chatId);
+        CreateAppUserDto userDto = new CreateAppUserDto(userName, chatId);
+        String url = baseUrl + "/registration";
         try {
-            ResponseEntity<AppUserCommonDto> response = postForCreateAppUser(userDto);
+            ResponseEntity<AppUserCommonDto> response = restTemplate.postForEntity(url, userDto, AppUserCommonDto.class);
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             if (ex.getMessage().contains("[Chat already exists]")) {
                 return ResponseEntity.ok().build();
@@ -47,15 +45,29 @@ public class RestClient {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<?> createAdventurer(String firstName, String lastName, String chatId) {
+        CreateAdventurerDto adventurerDto = new CreateAdventurerDto();
+        adventurerDto.setName(firstName);
+        adventurerDto.setLastName(lastName);
 
-    private CreateAppUserDto createCreateAppUserDto(String userName, String chatId) {
-        return new CreateAppUserDto(userName, chatId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(chatId, chatId);
+
+        HttpEntity<CreateAdventurerDto> request = new HttpEntity<>(adventurerDto, headers);
+
+        var response = restTemplate.exchange(baseUrl + "/adventurer/create", HttpMethod.POST, request, Object.class);
+
+        String responseText;
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            responseText = "New adventurer successfully created:\n" + Objects.requireNonNull(response.getBody());
+        } else {
+            responseText = "An error occurred while trying to create a new adventurer";
+        }
+
+        return ResponseEntity.ok(responseText);
     }
 
-    private ResponseEntity<AppUserCommonDto> postForCreateAppUser(CreateAppUserDto userDto) {
-        String url = baseUrl + "/registration";
-        return restTemplate.postForEntity(url, userDto, AppUserCommonDto.class);
-    }
+
 
 
 //    public AppUserCommonDto getUserById(String userId) {
@@ -104,27 +116,6 @@ public class RestClient {
 //        } else {
 //            responseText = "An error occurred while trying to update user";
 //        }
-//        return responseText;
-//    }
-//
-//    public String createAdventurer(String firstName, String lastName) {
-//        CreateAdventurerDto adventurerDto = new CreateAdventurerDto();
-//
-//        adventurerDto.setName(firstName);
-//        adventurerDto.setLastName(lastName);
-//        adventurerDto.setStrength(1);
-//        adventurerDto.setDexterity(1);
-//        adventurerDto.setConstitution(1);
-//
-//        var response = restTemplate.postForEntity(baseUrl + "/adventurer/create", adventurerDto, Object.class);
-//        String responseText;
-//
-//        if (response.getStatusCode() == HttpStatus.CREATED) {
-//            responseText = "New adventurer successfully created:\n" + Objects.requireNonNull(response.getBody());
-//        } else {
-//            responseText = "An error occurred while trying to create a new adventurer";
-//        }
-//
 //        return responseText;
 //    }
 //

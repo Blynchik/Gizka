@@ -17,6 +17,8 @@ import java.util.Queue;
 @Setter
 public class StartCommand extends AbstractCommand {
 
+    private final RestClient restClient;
+
     private static final String startMessage = "Добро пожаловать в мир фэнтези! \uD83C\uDF1F\uD83E\uDDDA\u200D♂\uFE0F\n" +
             "Здесь ты станешь главным героем своей собственной истории, полной экшна и приключений. Вступай в схватку со\n" +
             " свирепыми монстрами, встречайся с опасностями и преодолевай испытания, чтобы завоевать славу и покорить \n" +
@@ -27,8 +29,9 @@ public class StartCommand extends AbstractCommand {
 
     private static final String IMAGE_PATH = "D:\\нужное\\java\\own\\class\\bot\\src\\main\\resources\\logo.jpg";
 
-    public StartCommand(RestClient restClient, int numOfArgs){
-        super(restClient, numOfArgs, "/start");
+    public StartCommand(RestClient restClient){
+        super(0, "/start");
+        this.restClient = restClient;
     }
 
     @Override

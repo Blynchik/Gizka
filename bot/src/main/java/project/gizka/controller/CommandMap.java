@@ -22,8 +22,8 @@ public class CommandMap {
 
     public Map<String, AbstractCommand> getCommands() {
         return Map.of(
-                "/start", new StartCommand(restClient, 0),
-                "/help", new HelpCommand(restClient, 0, List.of(
+                "/start", new StartCommand(restClient),
+                "/help", new HelpCommand(List.of(
                         "/start - регистрация и начало игры",
                         "/help - все команды"
                 )));

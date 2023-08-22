@@ -3,7 +3,6 @@ package project.gizka.controller.command;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
 
 import java.util.LinkedList;
@@ -14,8 +13,8 @@ public class HelpCommand extends AbstractCommand {
 
     private final List<String> commands;
 
-    public HelpCommand(RestClient restClient, int numOfArgs, List<String> commands) {
-        super(restClient, numOfArgs, "/help");
+    public HelpCommand(List<String> commands) {
+        super(0, "/help");
         this.commands = commands;
     }
 

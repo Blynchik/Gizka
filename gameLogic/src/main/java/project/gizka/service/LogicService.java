@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.gizka.client.RestClient;
+import project.gizka.dto.FightLog;
+import project.gizka.dto.FightTurn;
 import project.gizka.dto.commonDto.AdventurerCommonDto;
 import project.gizka.dto.commonDto.EnemyCommonDto;
 import project.gizka.dto.commonDto.FighterDto;
-import project.gizka.util.FightLog;
-import project.gizka.util.FightTurn;
 
 import java.util.Random;
 
@@ -23,12 +23,12 @@ public class LogicService {
         this.restClient = restClient;
     }
 
-    public FightLog fight(Long adventurerId) throws Exception {
+    public FightLog fight(Long adventurerId, String authorization) throws Exception {
         Random random = new Random();
         FightLog fightLog = new FightLog();
 
-        AdventurerCommonDto adventurer = (AdventurerCommonDto) restClient.getAdventurerById(adventurerId.toString());
-        EnemyCommonDto enemy = (EnemyCommonDto) restClient.getRandomEnemy();
+        AdventurerCommonDto adventurer = (AdventurerCommonDto) restClient.getAdventurerById(adventurerId.toString(), authorization);
+        EnemyCommonDto enemy = (EnemyCommonDto) restClient.getRandomEnemy(authorization);
 
 
         while (adventurer.getHealthPoint() > 0 && enemy.getHealthPoint() > 0) {

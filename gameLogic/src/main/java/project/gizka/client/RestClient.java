@@ -22,12 +22,12 @@ public class RestClient {
         this.restTemplate = restTemplate;
     }
 
-    public Object getAdventurerById(String adventurerId) throws Exception { //сделать, чтобы возвращалось ResponseEntity, а переработка происходила в другом месте
+    public Object getAdventurerById(String adventurerId, String authorization) throws Exception { //сделать, чтобы возвращалось ResponseEntity, а переработка происходила в другом месте
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("my name", "my name");
+        headers.set("authorization", authorization);
         ResponseEntity<?> response = null;
         try {
-            HttpEntity<String> request = new HttpEntity<>(headers);
+            HttpEntity request = new HttpEntity<>(headers);
             response = restTemplate.exchange(baseUrl + "/adventurer/" + adventurerId, HttpMethod.GET, request, AdventurerCommonDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             return e.getMessage();
@@ -64,10 +64,13 @@ public class RestClient {
         return adventurerDto;
     }
 
-    public Object getRandomEnemy() throws Exception {
+    public Object getRandomEnemy(String authorization) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("authorization", authorization);
         ResponseEntity<?> response = null;
         try {
-            response = restTemplate.getForEntity(baseUrl + "/enemy/random", EnemyCommonDto.class);
+            HttpEntity request = new HttpEntity<>(headers);
+            response = restTemplate.exchange(baseUrl + "/enemy/random",HttpMethod.GET, request, EnemyCommonDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             return e.getMessage();
         } catch (HttpClientErrorException.BadRequest e) {

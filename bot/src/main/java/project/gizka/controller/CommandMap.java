@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
 import project.gizka.controller.command.CreateHeroCommand;
+import project.gizka.controller.command.FightCommand;
 import project.gizka.controller.command.HelpCommand;
 import project.gizka.controller.command.StartCommand;
 
@@ -25,10 +26,12 @@ public class CommandMap {
         return Map.of(
                 "/start", new StartCommand(restClient),
                 "/create", new CreateHeroCommand(restClient),
+                "/fight", new FightCommand(restClient),
                 "/help", new HelpCommand(List.of(
                         "/start - регистрация и начало игры",
                         "/help - все команды",
-                        "/create - создать героя"
+                        "/create - создать героя",
+                        "/fight - начать сражение"
                 )));
     }
 }

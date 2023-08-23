@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.gizka.dto.commonDto.AdventurerCommonDto;
@@ -12,7 +13,10 @@ import project.gizka.dto.createDto.CreateAdventurerDto;
 import project.gizka.model.Adventurer;
 import project.gizka.exception.notFound.AdventurerNotFoundException;
 import project.gizka.exception.validation.AdventurerValidationException;
+import project.gizka.model.AppUser;
+import project.gizka.model.AuthUser;
 import project.gizka.service.impl.AdventurerService;
+import project.gizka.service.impl.AppUserService;
 import project.gizka.util.Converter;
 
 import java.util.List;
@@ -22,17 +26,20 @@ import java.util.List;
 public class AdventurerController {
 
     private final AdventurerService adventurerService;
+    private final AppUserService appUserService;
 
     @Autowired
-    public AdventurerController(AdventurerService adventurerService) {
+    public AdventurerController(AdventurerService adventurerService,
+                                AppUserService appUserService) {
         this.adventurerService = adventurerService;
+        this.appUserService = appUserService;
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<AdventurerCommonDto>> getAll() {
         List<Adventurer> adventurers = adventurerService.getAll();
         List<AdventurerCommonDto> adventurersDto = adventurers.stream()
-                .map(Converter:: getAdventurerDtoFrom)
+                .map(Converter::getAdventurerDtoFrom)
                 .toList();
         return ResponseEntity.ok(adventurersDto);
     }
@@ -47,7 +54,8 @@ public class AdventurerController {
 
     @PostMapping("/create")
     public ResponseEntity<AdventurerCommonDto> create(@RequestBody @Valid CreateAdventurerDto adventurerDto,
-                                             BindingResult bindingResult) {
+                                                      BindingResult bindingResult,
+                                                      @AuthenticationPrincipal AuthUser authUser) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
@@ -55,6 +63,7 @@ public class AdventurerController {
         }
 
         Adventurer adventurer = Converter.getAdventurerFrom(adventurerDto);
+        adventurer.setAppUser(appUserService.getById(authUser.id()).get());
         Adventurer createdAdventurer = adventurerService.create(adventurer);
         AdventurerCommonDto createdAdventurerDto = Converter.getAdventurerDtoFrom(createdAdventurer);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAdventurerDto);
@@ -62,8 +71,8 @@ public class AdventurerController {
 
     @PutMapping("/{id}/edit")
     public ResponseEntity<AdventurerCommonDto> edit(@PathVariable Long id,
-                                           @RequestBody @Valid CreateAdventurerDto adventurerDto,
-                                           BindingResult bindingResult) {
+                                                    @RequestBody @Valid CreateAdventurerDto adventurerDto,
+                                                    BindingResult bindingResult) {
         checkAdventurerExistence(id);
 
         if (bindingResult.hasErrors()) {

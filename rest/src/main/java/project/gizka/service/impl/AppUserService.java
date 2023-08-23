@@ -3,11 +3,13 @@ package project.gizka.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.gizka.model.Adventurer;
 import project.gizka.model.AppUser;
 import project.gizka.repository.AppUserRepo;
 import project.gizka.service.CRUDService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +63,13 @@ public class AppUserService implements CRUDService<AppUser> {
 
     public Optional<AppUser> getByChat(String chat) {
         return appUserRepo.findByChat(chat);
+    }
+
+    public List<Long> getAdventurersIdByChat(String chat) {
+        Optional<AppUser> user = appUserRepo.findByChat(chat);
+
+        return user.map(appUser -> appUser.getAdventurers().stream().map(Adventurer::getId).toList())
+                .orElse(Collections.emptyList());
     }
 
     public Optional<AppUser> getByName(String name) {

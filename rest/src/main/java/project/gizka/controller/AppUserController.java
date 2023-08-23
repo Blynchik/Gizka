@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.gizka.dto.commonDto.AppUserCommonDto;
 import project.gizka.dto.createDto.CreateAppUserDto;
+import project.gizka.model.Adventurer;
 import project.gizka.model.AppUser;
 import project.gizka.exception.notFound.AppUserNotFoundException;
 import project.gizka.exception.validation.AppUserValidationException;
@@ -47,6 +48,11 @@ public class AppUserController {
                 .map(Converter ::getUserDtoFrom)
                 .toList();
         return ResponseEntity.ok(usersDto);
+    }
+
+    @GetMapping("/{chatId}/getAdventurers")
+    public ResponseEntity<List<Long>> getAdventurersId(@PathVariable String chatId){
+        return ResponseEntity.ok(appUserService.getAdventurersIdByChat(chatId));
     }
 
     @GetMapping("/{id}")

@@ -14,6 +14,7 @@ import project.gizka.dto.createDto.CreateAppUserDto;
 import project.gizka.exception.RestException;
 import project.gizka.util.FightLog;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 @Component
@@ -68,7 +69,8 @@ public class RestClient {
                     "Сила: " + adventurerDtoResponse.getStrength() +"\n" +
                     "Лоскость: " + adventurerDtoResponse.getDexterity() +"\n" +
                     "Выносливость: " + adventurerDtoResponse.getConstitution();
-            responseText = "Новый герой создан:\n" + description;
+            responseText = "Новый герой создан:\n" + description +
+            "\nВведите /fight для начала сражения";
         } else {
             responseText = "An error occurred while trying to create a new adventurer";
         }
@@ -76,7 +78,28 @@ public class RestClient {
         return responseText;
     }
 
+    public FightLog getFightLog(String chatId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(chatId, chatId);
 
+        HttpEntity request = new HttpEntity<>(headers);
+
+        var responseId = restTemplate.exchange(baseUrl + "/user/" + chatId + "/getAdventurers", HttpMethod.GET, request, ArrayList.class);
+        ArrayList<Integer> ids = (ArrayList<Integer>) responseId.getBody();
+
+        Integer id = ids.get(ids.size()-1);
+
+        var response = restTemplate.exchange(gameLogicUrl + "/fight/" + id,HttpMethod.GET, request, FightLog.class);
+        String responseText;
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
+        } else {
+            responseText = "An error occurred while trying to get fight log";
+        }
+
+        return response.getBody();
+    }
 
 
 //    public AppUserCommonDto getUserById(String userId) {
@@ -141,16 +164,4 @@ public class RestClient {
 //        return responseText;
 //    }
 //
-//    public FightLog getFightLog(String adventurerId) {
-//        var response = restTemplate.getForEntity(gameLogicUrl + "/fight/" + adventurerId, FightLog.class);
-//        String responseText;
-//
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
-//        } else {
-//            responseText = "An error occurred while trying to get fight log";
-//        }
-//
-//        return response.getBody();
-//    }
 }

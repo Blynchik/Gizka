@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import project.gizka.bot.MessageType;
 import project.gizka.bot.TelegramBot;
@@ -16,6 +17,7 @@ public class MessageSender implements Runnable {
 
     private final TelegramBot telegramBot;
     private final int SLEEP_TIME = 1000;
+    private int idMessageToDelete;
 
     @Autowired
     public MessageSender(TelegramBot telegramBot) {
@@ -53,7 +55,8 @@ public class MessageSender implements Runnable {
             switch (messageType) {
                 case TEXT -> {
                     SendMessage sendMessage = (SendMessage) object;
-                    telegramBot.execute(sendMessage);
+                    Message messageToDelete = telegramBot.execute(sendMessage);
+                    idMessageToDelete = messageToDelete.getMessageId();
                 }
                 case PHOTO -> {
                     SendPhoto sendPhoto = (SendPhoto) object;
@@ -61,6 +64,7 @@ public class MessageSender implements Runnable {
                 }
                 case DELETE -> {
                     DeleteMessage deleteMessage = (DeleteMessage) object;
+                    deleteMessage.setMessageId(idMessageToDelete);
                     telegramBot.execute(deleteMessage);
                 }
             }

@@ -31,13 +31,20 @@ public class FightCommand extends AbstractCommand {
 
             for (int i = 0; i < fightLog.getTurns().size(); i++) {
                 var fightTurn = fightLog.getTurns().get(i);
-                text = text + "\n"+fightTurn.toString()+"\n";
+                text = text + "\n" +
+                        fightTurn.getAttacker() + " атакует " +
+                        " с силой " + fightTurn.getAttack() +
+                        ", но " + fightTurn.getDefender() + " уклоняется от " +
+                        fightTurn.getEvasion() + " очков урона, " +
+                        "поэтому " + fightTurn.getDefender() + " получил всего " + fightTurn.getDamage() + " урона. " +
+                        fightTurn.getDefender() + " располагает " + fightTurn.getHealthPoint() + " очками здоровья." +
+                        "\n";
 
-                if(i%2==0){
-                    text ="Раунд "+ (i/2+1) + text;
+                if (i % 2 == 0) {
+                    text = "Раунд " + (i / 2 + 1) + text;
                 }
 
-                if(i == fightLog.getTurns().size()-1 || i%2>0){
+                if (i == fightLog.getTurns().size() - 1 || i % 2 > 0) {
                     messages.add(new SendMessage(chatId, text));
                     text = "";
                 }

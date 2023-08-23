@@ -1,7 +1,9 @@
 package project.gizka.bot;
 
 import lombok.Getter;
+import org.hibernate.sql.Delete;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,7 +18,9 @@ public class CommonResponsePool {
     private final PrivateResponsePools privateResponsePools;
     private final int THREADS = 2;
     private final String WAIT_MESSAGE = "Ожидание...";
+    private final int SECONDS_DELAY = 5;
     private final ScheduledExecutorService executorService;
+    private boolean waitingMessageAdded = false;
 
     public CommonResponsePool() {
         this.commonPool = new ConcurrentLinkedQueue<>();
@@ -28,21 +32,30 @@ public class CommonResponsePool {
         for (String key : privateResponsePools.getPrivateResponsePools().keySet()) {
             Queue<Object> messages = privateResponsePools.getPrivateResponsePools().get(key);
             int delay = 0;
-
-            for (Object ignored : messages) {
+            for (int i = 0; i < messages.size(); i++) {
                 if (messages.size() > 1) {
                     executorService.schedule(() -> {
                         synchronized (commonPool) {
+
+                            if (waitingMessageAdded) {
+                                DeleteMessage deleteMessage = new DeleteMessage();
+                                deleteMessage.setChatId(key);
+                                commonPool.add(deleteMessage);
+                                waitingMessageAdded = false;
+                            }
+
                             commonPool.add(messages.poll());
+
                             if (!messages.isEmpty()) {
                                 SendMessage waitMessage = new SendMessage();
                                 waitMessage.setChatId(key);
                                 waitMessage.setText(WAIT_MESSAGE);
                                 commonPool.add(waitMessage);
+                                waitingMessageAdded = true;
                             }
                         }
                     }, delay, TimeUnit.SECONDS);
-                    delay += 10;
+                    delay += SECONDS_DELAY;
                 } else {
                     synchronized (commonPool) {
                         commonPool.add(messages.poll());

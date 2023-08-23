@@ -41,25 +41,25 @@ public class StartCommand extends AbstractCommand {
         String userName = message.getFrom().getUserName();
         Queue<SendPhoto> messages = new LinkedList<>();
 
-        getResponseFromRest(userName, chatId);
-        SendPhoto picture = getPicture(chatId);
+        String response = getResponseFromRest(userName, chatId);
+        SendPhoto picture = getPicture(chatId, response);
         messages.add(picture);
 
         improveReadiness();
         return messages;
     }
 
-    private void getResponseFromRest(String userName, String chatId) {
-        restClient.createAppUser(userName, chatId);
+    private String getResponseFromRest(String userName, String chatId) {
+        return restClient.createAppUser(userName, chatId);
     }
 
-    private SendPhoto getPicture(String chatId) {
+    private SendPhoto getPicture(String chatId, String response) {
         SendPhoto photo = new SendPhoto();
         photo.setChatId(chatId);
         File imageFile = new File(IMAGE_PATH);
         InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
-        photo.setCaption(StartCommand.startMessage);
+        photo.setCaption(response +"\n"+startMessage);
         return photo;
     }
 }

@@ -28,7 +28,7 @@ public class CreateHeroCommand extends AbstractCommand {
 
         if (this.getState() == this.getNumOfArgs()) {
             lastName = message.getText();
-            text = restClient.createAdventurer(firstName, lastName, chatId).getBody().toString();
+            text = restClient.createAdventurer(firstName, lastName, chatId);
             messages.add(new SendMessage(chatId,text));
             improveReadiness();
         } else if (this.getState() == 1) {

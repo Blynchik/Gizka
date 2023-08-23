@@ -35,6 +35,7 @@ public class CommandController {
 
     private void handle(Update update, AbstractCommand abstractCommand) throws Exception {
         String chatId = update.getMessage().getChatId().toString();
+
         Queue<?> messages = abstractCommand.getMessages(update);
         putResponseToPrivatePool(messages, chatId);
     }

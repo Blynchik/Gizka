@@ -6,11 +6,15 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import project.gizka.client.RestClient;
 import project.gizka.controller.AbstractCommand;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 @Getter
@@ -19,12 +23,12 @@ public class StartCommand extends AbstractCommand {
 
     private final RestClient restClient;
 
-    private static final String startMessage = "Добро пожаловать в мир фэнтези! \uD83C\uDF1F\uD83E\uDDDA\u200D♂\uFE0F\n" +
-            "Здесь ты станешь главным героем своей собственной истории, полной экшна и приключений. Вступай в схватку со\n" +
-            " свирепыми монстрами, встречайся с опасностями и преодолевай испытания, чтобы завоевать славу и покорить \n" +
-            "этот магический мир.\n" +
-            "Ты будешь прокладывать свой путь через загадочные земли, разыскивая сокровища и сражаясь за свою жизнь. \n" +
-            "Так что готовь свое оружие, вступай в бой и докажи, что ты достоин быть легендарным героем фэнтези! \n" +
+    private static final String startMessage = "Добро пожаловать в мир фэнтези! \uD83C\uDF1F\uD83E\uDDDA\u200D♂\uFE0F" +
+            "Здесь ты станешь главным героем своей собственной истории, полной экшна и приключений. Вступай в схватку со" +
+            " свирепыми монстрами, встречайся с опасностями и преодолевай испытания, чтобы завоевать славу и покорить " +
+            "этот магический мир." +
+            "Ты будешь прокладывать свой путь через загадочные земли, разыскивая сокровища и сражаясь за свою жизнь. " +
+            "Так что готовь свое оружие, вступай в бой и докажи, что ты достоин быть легендарным героем фэнтези! " +
             "✨\uD83D\uDCAA Приготовься к незабываемым приключениям и морю эмоций. Приятной игры! \uD83C\uDFAE\uD83D\uDD25";
 
     private static final String IMAGE_PATH = "D:\\нужное\\java\\own\\class\\bot\\src\\main\\resources\\logo.jpg";
@@ -59,7 +63,9 @@ public class StartCommand extends AbstractCommand {
         File imageFile = new File(IMAGE_PATH);
         InputFile inputFile = new InputFile(imageFile);
         photo.setPhoto(inputFile);
-        photo.setCaption(response +"\n"+startMessage);
+
+        photo.setCaption("\n"+startMessage+"\n" + response + "\n\n" +
+                "Введите /create для создания героя");
         return photo;
     }
 }

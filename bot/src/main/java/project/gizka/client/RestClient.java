@@ -64,8 +64,11 @@ public class RestClient {
         String responseText;
         if (response.getStatusCode() == HttpStatus.CREATED) {
             AdventurerCommonDto adventurerDtoResponse = (AdventurerCommonDto) response.getBody();
-            String description = "Имя: " + adventurerDtoResponse.getLastName() + " " + adventurerDtoResponse.getLastName() +"\n"+"Сила: " + adventurerDtoResponse.getStrength();
-            responseText = "New adventurer successfully created:\n" + description;
+            String description = "Имя: " + adventurerDtoResponse.getName() + " " + adventurerDtoResponse.getLastName() +"\n" +
+                    "Сила: " + adventurerDtoResponse.getStrength() +"\n" +
+                    "Лоскость: " + adventurerDtoResponse.getDexterity() +"\n" +
+                    "Выносливость: " + adventurerDtoResponse.getConstitution();
+            responseText = "Новый герой создан:\n" + description;
         } else {
             responseText = "An error occurred while trying to create a new adventurer";
         }

@@ -59,9 +59,8 @@ public class MessageSender implements Runnable {
                 case TEXT -> {
                     SendMessage sendMessage = (SendMessage) object;
                     Message messageToDelete = telegramBot.execute(sendMessage);
-                    if (sendMessage.getText().contains("Ожидание")) {
+                    if (sendMessage.getText().contains("Ожидание"))
                         idMessageToDelete.add(messageToDelete.getMessageId());
-                    }
                 }
                 case PHOTO -> {
                     SendPhoto sendPhoto = (SendPhoto) object;

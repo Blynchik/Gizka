@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class CommonResponsePool {
     private final Queue<Object> commonPool;
     private final PrivateResponsePools privateResponsePools;
-    private final int THREADS = 2;
+    private final int THREADS = 20;
     private final String WAIT_MESSAGE = "⏳Ожидание...";
     private final int SECONDS_DELAY = 5;
     private final ScheduledExecutorService executorService;
@@ -32,7 +32,7 @@ public class CommonResponsePool {
         for (String key : privateResponsePools.getPrivateResponsePools().keySet()) {
             Queue<Object> messages = privateResponsePools.getPrivateResponsePools().get(key);
             int delay = 0;
-            for (int i = 0; i < messages.size(); i++) {
+            for (int i = 0; i <= messages.size(); i++) {
                 if (messages.size() > 1) {
                     executorService.schedule(() -> {
                         synchronized (commonPool) {

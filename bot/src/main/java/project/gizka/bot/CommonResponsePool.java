@@ -17,7 +17,7 @@ public class CommonResponsePool {
     private final Queue<Object> commonPool;
     private final PrivateResponsePools privateResponsePools;
     private final int THREADS = 2;
-    private final String WAIT_MESSAGE = "Ожидание...";
+    private final String WAIT_MESSAGE = "⏳Ожидание...";
     private final int SECONDS_DELAY = 5;
     private final ScheduledExecutorService executorService;
     private boolean waitingMessageAdded = false;

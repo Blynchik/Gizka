@@ -2,6 +2,7 @@ package project.gizka.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import project.gizka.bot.TelegramBot;
@@ -31,9 +32,21 @@ public class MessageReceiver implements Runnable {
                 while (!updateQueue.isEmpty()) {
                     Update update = updateQueue.poll();
                     if (update != null) {
-                        Message originalMessage = update.getMessage();
-                        String chatId = originalMessage.getChatId().toString();
-                        String commandKey = originalMessage.getText();
+                        String chatId = "";
+                        String commandKey = "";
+
+                        if(update.hasMessage()) {
+                            Message originalMessage = update.getMessage();
+                            chatId = originalMessage.getChatId().toString();
+                            commandKey = originalMessage.getText();
+                        }
+
+                        if(update.hasCallbackQuery()){
+                            CallbackQuery callback = update.getCallbackQuery();
+                            chatId = callback.getMessage().getChatId().toString();
+                            commandKey = callback.getData();
+                        }
+
 
                         commandController.handleCommand(update, chatId, commandKey);
                     }

@@ -39,12 +39,12 @@ public class RestClient {
             ResponseEntity<AppUserCommonDto> response = restTemplate.postForEntity(url, userDto, AppUserCommonDto.class);
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             if (ex.getMessage().contains("[Chat already exists]")) {
-                return "У вас уже есть аккаунт";
+                return "\nУ вас уже есть аккаунт ✅";
             } else {
-                throw new RestException(ex.getResponseBodyAsString());
+                return ex.getMessage() + ". Press /start";
             }
         }
-        return "Аккаунт создан";
+        return "\nВаш аккаунт создан ❗";
     }
 
     public String createAdventurer(String firstName, String lastName, String chatId) {
@@ -60,22 +60,26 @@ public class RestClient {
 
         HttpEntity<CreateAdventurerDto> request = new HttpEntity<>(adventurerDto, headers);
 
-        var response = restTemplate.exchange(baseUrl + "/adventurer/create", HttpMethod.POST, request, AdventurerCommonDto.class);
+        try {
+            var response = restTemplate.exchange(baseUrl + "/adventurer/create", HttpMethod.POST, request, AdventurerCommonDto.class);
 
-        String responseText;
-        if (response.getStatusCode() == HttpStatus.CREATED) {
-            AdventurerCommonDto adventurerDtoResponse = (AdventurerCommonDto) response.getBody();
-            String description = "Имя: " + adventurerDtoResponse.getName() + " " + adventurerDtoResponse.getLastName() +"\n" +
-                    "Сила: " + adventurerDtoResponse.getStrength() +"\n" +
-                    "Лоскость: " + adventurerDtoResponse.getDexterity() +"\n" +
-                    "Выносливость: " + adventurerDtoResponse.getConstitution();
-            responseText = "Новый герой создан:\n" + description +
-            "\nВведите /fight для начала сражения";
-        } else {
-            responseText = "An error occurred while trying to create a new adventurer";
+            String responseText;
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                AdventurerCommonDto adventurerDtoResponse = (AdventurerCommonDto) response.getBody();
+                String description = "Имя: \uD83D\uDCDC" + adventurerDtoResponse.getName() + " " + adventurerDtoResponse.getLastName() + "\n" +
+                        "Сила: \uD83C\uDFCB\uFE0F\u200D♂\uFE0F" + adventurerDtoResponse.getStrength() + "\n" +
+                        "Лоскость: \uD83E\uDD38\u200D♀\uFE0F" + adventurerDtoResponse.getDexterity() + "\n" +
+                        "Выносливость: \uD83C\uDFC3" + adventurerDtoResponse.getConstitution();
+                responseText = "Новый герой создан\uD83D\uDCCC:\n\n" + description +
+                        "\n\nВведите /fight для начала сражения \uD83E\uDD3A";
+            } else {
+                responseText = "An error occurred while trying to create a new adventurer";
+            }
+
+            return responseText;
+        } catch (Exception e) {
+            return e.getMessage() + ". Press /start" ;
         }
-
-        return responseText;
     }
 
     public FightLog getFightLog(String chatId) {
@@ -83,19 +87,26 @@ public class RestClient {
         headers.setBasicAuth(chatId, chatId);
 
         HttpEntity request = new HttpEntity<>(headers);
-
-        var responseId = restTemplate.exchange(baseUrl + "/user/" + chatId + "/getAdventurers", HttpMethod.GET, request, ArrayList.class);
-        ArrayList<Integer> ids = (ArrayList<Integer>) responseId.getBody();
-
-        Integer id = ids.get(ids.size()-1);
-
-        var response = restTemplate.exchange(gameLogicUrl + "/fight/" + id,HttpMethod.GET, request, FightLog.class);
         String responseText;
+        ResponseEntity<FightLog> response = null;
+        try {
+            var responseId = restTemplate.exchange(baseUrl + "/user/" + chatId + "/getAdventurers", HttpMethod.GET, request, ArrayList.class);
+            ArrayList<Integer> ids = (ArrayList<Integer>) responseId.getBody();
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
-        } else {
-            responseText = "An error occurred while trying to get fight log";
+            Integer id = ids.get(ids.size() - 1);
+
+            response = restTemplate.exchange(gameLogicUrl + "/fight/" + id, HttpMethod.GET, request, FightLog.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                responseText = "Fight log:\n" + Objects.requireNonNull(response.getBody());
+            } else {
+                responseText = "An error occurred while trying to get fight log";
+            }
+        } catch (Exception e) {
+            responseText = e.getMessage();
+            FightLog fightLog =  new FightLog();
+            fightLog.setWinner("An error occurred while trying to get fight log, try to authenticate. Press /start");
+            return fightLog;
         }
 
         return response.getBody();
